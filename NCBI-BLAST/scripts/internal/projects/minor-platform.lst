@@ -1,0 +1,6 @@
+#include "../../projects/no_gbench.lst"
+internal/test/corelib
+internal/test/misc/xmlwrapp
+internal/demo/misc/xmlwrapp
+internal/objects
+internal/misc/dbapi_driver_wrap_s

@@ -1,0 +1,5 @@
+#include "../../projects/no_gbench.lst"
+internal/test/corelib
+internal/test/misc/xmlwrapp
+internal/demo/misc/xmlwrapp
+internal/util/testipub

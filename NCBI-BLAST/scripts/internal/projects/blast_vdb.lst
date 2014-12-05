@@ -1,0 +1,7 @@
+#include "../../projects/blast/project.lst"
+sra/sdk
+sra/readers/sra$
+sra/data_loaders/wgs$
+sra/data_loaders/sra$
+sra/data_loaders/csra$
+internal/blast/vdb

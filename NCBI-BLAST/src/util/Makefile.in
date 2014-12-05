@@ -1,0 +1,10 @@
+# $Id: Makefile.in 385270 2013-01-08 16:23:52Z ivanov $
+
+# Meta-makefile ("UTIL" project)
+#################################
+
+LIB_PROJ = util
+SUB_PROJ = regexp xregexp compress diff image tables creaders sequtil bitset qparse test demo
+
+srcdir = @srcdir@
+include @builddir@/Makefile.meta

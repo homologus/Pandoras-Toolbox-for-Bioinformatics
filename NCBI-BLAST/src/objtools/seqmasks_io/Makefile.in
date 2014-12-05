@@ -1,0 +1,7 @@
+# $Id: Makefile.in 389851 2013-02-21 13:46:12Z camacho $
+
+LIB_PROJ = seqmasks_io
+SUB_PROJ = unit_test
+
+srcdir = @srcdir@
+include @builddir@/Makefile.meta

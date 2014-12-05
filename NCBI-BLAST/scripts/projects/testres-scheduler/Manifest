@@ -1,0 +1,27 @@
+#
+# Filename: Manifest
+#
+# $Id: Manifest 432272 2014-04-10 20:51:27Z zakharov $
+#
+# Author: Mikhail Zakharov (template by Sergey Satskiy)
+#
+# Purpose: This file holds all the supported configurations of a package
+#          It is used by release configurator.
+#
+USE_COMPONENTS
+
+# Scheduler itself + 5 CGIs
+APP: testres_scheduler testres.cgi display_run.cgi display_result.cgi unitlist.cgi
+
+#Scripts
+COPY: $srcdir/src/internal/cppcore/testres/tool/scripts/ $installdir
+
+#Presenters
+COPY: $srcdir/src/internal/cppcore/testres/web/presenters/ $installdir
+
+#ini file
+COPY: $srcdir/src/internal/cppcore/testres/scheduler/testres_scheduler.ini $installdir/bin
+
+Linux64-Centos  : plain  : GCC.sh      --without-debug --with-mt --with-static --without-runpath --with-flat-makefile --without-ncbi-c
+
+

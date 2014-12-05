@@ -1,0 +1,15 @@
+#
+# Filename: Manifest
+#
+# $Id: Manifest 429354 2014-03-13 17:36:52Z satskyse $
+#
+# Author: Sergey Satskiy
+#
+
+# The file is intentionally left empty.
+# The package does not have any modules which have to be built.
+# The packaging tool is used for useful handling of the project.lst
+# file and versioning.
+
+TAG_PRE_COMMIT: tagprecommit/create_version.py $local $version
+

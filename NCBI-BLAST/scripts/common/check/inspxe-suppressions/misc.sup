@@ -1,0 +1,20 @@
+suppression = {
+	name = "ncbilog - Creating critical section"
+	type = {kernel_handle_leak}
+	stacks = {
+		allocation={
+			!!!;
+			func=NcbiLog_Default_MTLock_Handler,src=ncbi_c_log.c;
+		}
+	}
+}
+suppression = {
+	name = "ncbilog - NcbiLog_InitForAttachedContext() memory leak"
+	type = {reachable_memory_leak}
+	stacks = {
+		allocation={
+			...;
+			func=NcbiLog_InitForAttachedContext,src=ncbi_c_log.c;
+		}
+	}
+}

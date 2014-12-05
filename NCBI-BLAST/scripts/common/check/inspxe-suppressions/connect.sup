@@ -1,0 +1,48 @@
+suppression = {
+	name = "::connect() - leaked handle"
+	type = {kernel_handle_leak}
+	stacks = {
+		allocation={
+			...;
+			func=connect;
+		}
+	}
+}
+suppression = {
+	name = "s_CORE_MT_Lock_default_handler - leaked handle"
+	type = {kernel_handle_leak}
+	stacks = {
+		allocation={
+			!!!;
+			src=ncbi_core.c,func=s_CORE_MT_Lock_default_handler;
+		}
+	}
+}
+suppression = {
+	name = "ConnNetInfo_Create/Clone (1)"
+	type = {uninitialized_memory_access}
+	stacks = {
+		allocation={
+			!!!;
+			src=ncbi_connutil.c,func=ConnNetInfo_Create;
+		}
+		{
+			!!!;
+			src=ncbi_connutil.c,func=ConnNetInfo_Clone;
+		}
+	}
+}
+suppression = {
+	name = "ConnNetInfo_Create/Clone (1)"
+	type = {uninitialized_memory_access_partial}
+	stacks = {
+		allocation={
+			!!!;
+			src=ncbi_connutil.c,func=ConnNetInfo_Create;
+		}
+		{
+			!!!;
+			src=ncbi_connutil.c,func=ConnNetInfo_Clone;
+		}
+	}
+}

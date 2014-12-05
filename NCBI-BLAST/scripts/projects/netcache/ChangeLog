@@ -1,0 +1,82 @@
+Dec 15, 2008
+Added application logging - start and stop of each request from client
+are logged.
+Rewritten protocol parser. Optional additions to protocol are now allowed.
+Transactions checkpoints frequency is now configurable from ini-file and
+is greater by default.
+Better recovery of database in case of unclean exit.
+
+
+Sept 26, 2008
+Enhanced logging and monitoring facilities.
+Fixed bugs of not writing empty blobs, writing blobs twice and
+leaking of resources if connection closed during writing of blob
+into it.
+Added logging of ClientIP and SessionID came from NetCache API client.
+
+Added tests to release to be able to test NetCache after releasing.
+
+
+Apr 04, 2008
+Initial release using a release procedure
+
+...
+
+April 11, 2013
+version 6.6.1
+Fixed synchronization of PURGE data.
+Added re-initialization of database, when Netcache was not terminated properly.
+Fixed bug, when NC was sending confirmation which client did not expect.
+Added maximal time-to-live setting for blobs.
+Fixed bug in READPART command, when invalid data was returned under certain conditions.
+
+
+July 23, 2013
+version 6.6.2
+Corrected problem with belated socket closing.
+Corrected handling of purged blobs on HASB command.
+Added journaling and reporting of initial and periodic synchronizations.
+
+
+September 20, 2013
+version 6.6.3
+Fixed bug that leads to occasional communication blocking.
+Introduced lifespan_ttl - an absolute maximum of blob life duration.
+Modified SHUTDOWN command by adding drain option (wait untill all blobs are gone).
+
+November 20, 2013
+version 6.6.4
+Added age parameter into blob read commands; corrected prolonging version life to use version ttl.
+Added calculating and reporting blob size forwarded to another server.
+Corrected logging to log connection ID when establishing new connection.
+Corrected logging to make sure to add end-of-line when starting new message.
+Changed log messages to show peer name and port.
+Changed format of VERSION command reply.
+
+August 06, 2014
+version 6.7.0
+Added option to use different write-back timeouts during and after initial synchronization.
+Added options into GETCONF command to get detailed information about specific parts of configuration only.
+Modified behavior on disk spaceshortage: do not start periodic sync, forward incoming blobs to mirrors, request initial sync to be done when disk space is again available.
+Added possibility of storing blob keys for which blob data was not received successfully.
+Added limit size of blobs to store, or to mirror.
+Added primitive HTTP support (POST/PUT/GET/HEAD/DELETE commands).
+Added periodic check for changed IP address when failing to connect to peer.
+Reviewed and corrected blob storage code, corrected thread synchronization, reduced lock time on data collection.
+Added support for encoded keys (v3).
+Corrected calculation and modification of blob dead times, speed up blob removal in  case it is not mirrored.
+In SETVALID command, added reporting current blob version on version conflict.
+Added blob update notifications.
+Added version check when connecting to another instance of NC.
+Added into statistics count of peer connections and mirroring-related data.
+
+September 04, 2014
+version 6.8.0
+Added possibility of re-configuring blob mirroring on the fly, without stopping the server.
+
+October 06, 2014
+version 6.8.1
+Changed the way periodic sync is made to lower priority of initial sync and to sync all available servers for a given slot.
+Added report of peer servers state.
+
+

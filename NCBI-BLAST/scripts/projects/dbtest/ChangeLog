@@ -1,0 +1,16 @@
+May 28, 2013
+- Release 1.3.7
+- Ignoring "Unicode_" profixes in the platform identifiers to avoid rejecting
+  unicode builds results loading
+
+
+September 23, 2008
+Add support for timed out and skipped tests and for timed out units.
+
+
+September 5. 2008
+Speed up database queries for cgi-interface.
+
+
+Jul 28, 2008
+First test release using the release procedure

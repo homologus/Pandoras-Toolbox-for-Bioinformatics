@@ -1,0 +1,255 @@
+suppression = {
+	name = "Suppress all memory leaks (1)"
+	type = {reachable_memory_leak}
+	stacks = {
+		{
+			
+		}
+	}
+}
+suppression = {
+	name = "Suppress all memory leaks (3)"
+	type = {unreachable_memory_leak}
+	stacks = {
+		{
+			
+		}
+	}
+}
+suppression = {
+	name = "Unhandled exception - VS2010"
+	type = {prob_app_exception}
+	stacks = {
+		{
+			!!!;
+			mod=MSVCR110.dll,func=call_reportfault;
+		}
+	}
+}
+suppression = {
+	name = "Unhandled exception - VS2013"
+	type = {prob_app_exception}
+	stacks = {
+		{
+			!!!;
+			mod=MSVCR120.dll,func=call_reportfault;
+		}
+	}
+}
+suppression = {
+	name = "::putenv() - 1"
+	type = {invalid_deallocation}
+	stacks = {
+		{
+			!!!;
+			mod=ntdll.dll,func=RtlExpandEnvironmentStrings;
+		}
+	}
+}
+suppression = {
+	name = "::putenv() - 2"
+	type = {invalid_deallocation}
+	stacks = {
+		{
+			!!!;
+			mod=MSVCR110.dll,func=_crtsetenv;
+		}
+	}
+}
+suppression = {
+	name = "::getenv() - 1"
+	type = {invalid_memory_access}
+	stacks = {
+		{
+			!!!;
+			mod=MSVCR110.dll,func=getenv_helper_nolock;
+		}
+	}
+}
+suppression = {
+	name = "::strchr()"
+	type = {uninitialized_memory_access}
+	stacks = {
+		{
+			...;
+			mod=MSVCR120.dll,func=strchr;
+		}
+	}
+}
+suppression = {
+	name = "::sysytem()"
+	type = {invalid_memory_access}
+	stacks = {
+		{
+			...;
+			mod=MSVCR120.dll,func=system;
+		}
+	}
+}
+suppression = {
+	name = "istream::operator>> - memory leak"
+	type = {reachable_memory_leak}
+	stacks = {
+		allocation={
+			...;
+			mod=MSVCP110.dll,func=operator>>,src=istream;
+		}
+	}
+}
+suppression = {
+	name = "ostrstream::operator<< - memory leak"
+	type = {unreachable_memory_leak}
+	stacks = {
+		allocation={
+			...;
+			func=operator<<,src=ostream;
+		}
+	}
+}
+suppression = {
+	name = "strstream::overflow() - memory leak"
+	type = {unreachable_memory_leak}
+	stacks = {
+		allocation={
+			...;
+			func=overflow,src=strstream;
+		}
+	}
+}
+suppression = {
+	name = "dospawn() - kerner resource leak"
+	type = {kernel_handle_leak}
+	stacks = {
+		allocation={
+			!!!;
+			mod=MSVCR110.dll,func=dospawn;
+		}
+	}
+}
+suppression = {
+	name = "::CreateProcess()"
+	type = {invalid_memory_access}
+	stacks = {
+		{
+			...;
+			mod=kernel32.dll,func=CreateProcessA;
+		}
+	}
+}
+suppression = {
+	name = "::GetNamedSecurityInfo()"
+	type = {invalid_memory_access}
+	stacks = {
+		{
+			...;
+			mod=ADVAPI32.dll,func=GetNamedSecurityInfoA;
+		}
+	}
+}
+suppression = {
+	name = "deque - memory leak 1"
+	type = {unreachable_memory_leak}
+	stacks = {
+		allocation={
+			!!!;
+			func=push_back,src=deque,line=1154,func_line=2;
+		}
+	}
+}
+suppression = {
+	name = "deque - memory leak 2"
+	type = {unreachable_memory_leak}
+	stacks = {
+		allocation={
+			!!!;
+			func=_Growmap,src=deque,line=1818,func_line=16;
+		}
+	}
+}
+suppression = {
+	name = "deque - memory leak 3"
+	type = {unreachable_memory_leak}
+	stacks = {
+		allocation={
+			!!!;
+			func="deque<class ncbi::CException const *,class std::allocator<class ncbi::CException const *> >",src=deque,line=956,func_line=0;
+		}
+	}
+}
+suppression = {
+	name = "NSI.dll - handle leak"
+	type = {kernel_handle_leak}
+	stacks = {
+		allocation={
+			!!!;
+			func=NsiGetParameterEx,mod=NSI.dll;
+		}
+	}
+}
+suppression = {
+	name = "ODBC32.dll"
+	stacks = {
+		allocation={
+			...;
+			mod=ODBC32.dll;
+		}
+	}
+}
+suppression = {
+	name = "dbghelp.dll"
+	type = {invalid_memory_access}
+	stacks = {
+		{
+			...;
+			mod=dbghelp.dll;
+		}
+	}
+}
+suppression = {
+	name = "gnutls_global_init() - memory leak"
+	stacks = {
+		allocation={
+			...;
+			func=gnutls_global_init;
+		}
+	}
+}
+suppression = {
+	name = "typename.cpp"
+	type = {reachable_memory_leak}
+	stacks = {
+		allocation={
+			...;
+			mod=MSVCR110.dll,func=_Name_base_internal,src=typname.cpp;
+		}
+	}
+}
+suppression = {
+	name = "xtree::push_back()"
+	type = {uninitialized_memory_access_partial}
+	stacks = {
+		allocation={
+			...;
+			func=_Buynode0,src=xtree;
+		}
+		{
+			...;
+			func=push_back,src=vector;
+		}
+	}
+}
+suppression = {
+	name = "__copy_path_to_wide_string"
+	type = {invalid_memory_access_partial}
+	stacks = {
+		allocation={
+			!!!;
+			mod=MSVCR110.dll,func=__copy_path_to_wide_string;
+		}
+		{
+			!!!;
+			mod=MSVCR110.dll,func=wcsrchr;
+		}
+	}
+}
+

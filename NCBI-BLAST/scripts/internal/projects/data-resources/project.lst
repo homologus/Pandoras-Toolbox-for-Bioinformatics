@@ -1,0 +1,15 @@
+#define SECTION1 data resources
+#define REDUNDANT util/unicode_to_ascii.txt
+internal/cppcore/data-resources/.ncbirc
+objects/seqloc/accguide.txt
+objects/seqfeat/ecnum_.*\.txt
+
+#define SECTION2 Tests source code
+internal$
+internal/test$
+internal/test/util
+
+#define SECTION3 Required for boost test framework which is used by tests
+corelib$
+util$
+./include/util/bitset$
