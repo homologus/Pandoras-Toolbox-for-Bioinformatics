@@ -28,6 +28,7 @@ In case of doubt, please consult the original documentations.
 BLAST - aligner
 ==============
 
+ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.2.30+-x64-linux.tar.gz
 
 
 DALIGNER - Pacbio aligner
@@ -61,6 +62,7 @@ http://bioinf.spbau.ru/en/content/spades-download-0
 Minia
 =====
 
+https://gatb.inria.fr/
 
 
 BCALM
@@ -89,3 +91,5 @@ http://www.cs.cmu.edu/~ckingsf/software/sailfish/
 https://github.com/kingsfordgroup/sailfish
 
 
+rapsearch2
+==========
