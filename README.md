@@ -2,7 +2,7 @@ Toolbox
 =======
 
 A collection of efficient programs, modified for our needs. The collection is available under GPL V3.0 license, but some
-of the individual codes may have more permissive licenses.
+of the individual codes may have more permissive licenses.  
 
 
 KMC - kmer counter
@@ -25,8 +25,8 @@ http://sun.aei.polsl.pl/kmc/download/kmc.tar.gz
 In case of doubt, please consult the original documentations.
 
 
-BLAST - aligner
-==============
+NCBI BLAST - aligner
+====================
 
 ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.2.30+-x64-linux.tar.gz
 
