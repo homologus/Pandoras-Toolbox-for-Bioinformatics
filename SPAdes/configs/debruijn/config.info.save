@@ -1,0 +1,186 @@
+; input options:
+
+#include "simplification.info"
+#include "distance_estimation.info"
+#include "detail_info_printer.info"
+
+K		55
+
+run_mode false
+project_name    TOY_DATASET
+dataset         ./configs/debruijn/datasets_archive/toy.info
+log_filename    log.properties
+
+
+output_base	      ./data/debruijn/
+
+additional_contigs	tmp_contigs.fasta
+
+load_from         latest/saves/ ; tmp or latest 
+
+
+; Multithreading options
+use_multithreading	true 
+temp_bin_reads_dir	.bin_reads/
+max_threads		8
+max_memory      120; in Gigabytes
+buffer_size	      	512; in Megabytes
+
+
+;entry_point construction
+;entry_point paired_info_count
+;entry_point simplification
+;entry_point late_pair_info_count
+;entry_point distance_estimation
+entry_point repeats_resolving
+;entry_point n50_enlargement
+
+developer_mode true
+
+; paired (1) or unpaired (0, for quick debug and algorithms testing) mode
+paired_mode true
+
+; The following parameters are used ONLY if developer_mode is true
+
+; whether to print save-files (which take space on disk) - ONLY in developer mode
+make_saves true
+
+; whether to output dot-files with pictures of graphs - ONLY in developer mode
+output_pictures true
+
+; whether to output resulting contigs after intermediate stages - ONLY in developer mode
+output_nonfinal_contigs true
+
+; whether to compute number of paths statistics   - ONLY in developer mode
+compute_paths_number false
+
+; End of developer_mode parameters
+
+; iterative mode switcher, activates additional contigs usage
+use_additional_contigs false
+
+; use unipaths as additional contigs instead of just graph edges
+use_unipaths false
+
+;if true long ec are removed based on topology and coverage
+additional_ec_removing    true
+
+; set it true to separate the clusters after de stage
+divide_clusters false
+
+;if true simple mismatches are corrected
+correct_mismatches          true
+
+; set it true to get statistics, such as false positive/negative, perfect match, etc.
+paired_info_statistics false
+
+; set it true to get statistics for pair information (over gaps), such as false positive/negative, perfect match, etc.
+paired_info_scaffolder false
+
+estimation_mode simple
+; simple, weighted, extensive, smoothing
+
+paired_metrics read_count
+; read_count, product
+
+; repeat resolving mode (none split path_extend combined rectangles)
+resolving_mode path_extend
+
+use_scaffolder  true
+
+andrey_params {
+	#include "path_extend/pe_params.info"
+}
+
+; Produce info for all components of graph and run repeat resolver for each component.
+componential_resolve false
+
+;repeat_resolving 
+
+
+sc_rr
+{
+	symmetric_resolve true
+	mode		1 ; Additional resolve cheats, don't change if you are not sure
+	inresolve_cutoff_proportion 0.1
+	near_vertex  30
+	max_distance 50
+	max_repeat_length 8000
+    kill_loops true
+}
+
+usual_rr
+{
+	symmetric_resolve true
+	mode		1; Additional resolve cheats, don't change if you are not sure
+	inresolve_cutoff_proportion 0.5
+	near_vertex  30
+	max_distance 50
+	max_repeat_length 4000
+	kill_loops true
+}
+
+
+;position handling
+
+pos
+{
+	max_single_gap 50
+	contigs_for_threading ./data/debruijn/contigs.fasta
+    contigs_to_analyze ./data/debruijn/contigs.fasta
+	late_threading false
+	careful_labeling false
+
+}
+
+gap_closer_enable	true
+
+gap_closer
+{
+    minimal_intersection	10
+    before_simplify		true
+    in_simplify    		false
+    after_simplify 		true
+    weight_threshold		2.0
+}
+
+SAM_writer_enable   false
+
+SAM_writer
+{
+	output_map_format	false
+	align_before_RR		false
+	align_after_RR		true
+	adjust_align		true
+	align_only_paired	true
+	output_broken_pairs	false
+	align_original_reads	false
+	print_quality		false
+	original_first	E.coli/jgi/0012/Ecoli_0012.1.fastq
+	original_second	E.coli/jgi/0012/Ecoli_0012.2.fastq
+
+}
+
+
+; consensus
+need_consensus  false ; output is VERY large(gigabytes).
+uncorrected_reads	none
+
+path_set_graph false  ;experimental
+mismatch_ratio 2.0;
+
+jump
+{
+	    load                false
+	    weight_threshold    0.05
+}
+
+graph_read_corr
+{
+	enable false
+	output_dir corrected_contigs/
+	binary true
+}
+
+;temporary flag to generate saves even in non-developer mode
+force_make_saves false
