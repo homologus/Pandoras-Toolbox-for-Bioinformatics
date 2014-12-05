@@ -1,22 +1,35 @@
 Toolbox
 =======
 
-A collection of programs.
+A collection of efficient programs, modified for our needs.
+
 
 KMC2 - kmer counter
+===================
 
-BLAST
+BLAST - aligner
+==============
 
-SOAPdenovo2
-
-DALIGNER
+DALIGNER - Pabio aligner
+=======================
 
 BWA
+====
+
+
+SOAPdenovo2
+===========
 
 Minia
+=====
 
 BCALM
+=====
 
 Trinity
+=======
+
+Sailfish
+========
 
 
