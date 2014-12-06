@@ -4,9 +4,18 @@ Toolbox
 A collection of efficient programs, modified for our needs. The collection is available under GPL V3.0 license, but some
 of the individual codes may have more permissive licenses.  
 
+Samtools
+========
+
+
+
+
+
 
 KMC - kmer counter
 ===================
+
+
 http://sun.aei.polsl.pl/kmc/
 
 http://sun.aei.polsl.pl/kmc/download/kmc.tar.gz
@@ -28,7 +37,10 @@ In case of doubt, please consult the original documentations.
 NCBI BLAST - aligner
 ====================
 
-ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.2.30+-x64-linux.tar.gz
+ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.2.30+-src.tar.gz
+
+BLAST is a "United States Government Work" under the terms of the United States Copyright Act.  
+
 
 
 DALIGNER - Pacbio aligner
@@ -47,8 +59,17 @@ https://github.com/lh3/bwa
 
 
 
-SOAPdenovo2
-===========
+SOAPdenovo2, SOAPdenovo2-trans
+==============================
+
+
+GPL3.0 license.
+
+SOAPdenovo2-src-r240
+
+http://softlayer-dal.dl.sourceforge.net/project/soapdenovotrans/SOAPdenovo-Trans/src/v1.04/SOAPdenovo-Trans-src-v1.04.zip
+
+
 
 SPAdes
 ======
@@ -91,5 +112,7 @@ http://www.cs.cmu.edu/~ckingsf/software/sailfish/
 https://github.com/kingsfordgroup/sailfish
 
 
-rapsearch2
+RAPSearch2
 ==========
+
+

@@ -13,7 +13,7 @@ else
  override TRINITY_COMPILER=gnu
 endif
 
-TARGETS=inchworm_target chrysalis_target plugins
+TARGETS=inchworm_target chrysalis_target 
 
 all: ${TARGETS}
 	sh ./util/support_scripts/install_tests.sh
@@ -26,9 +26,6 @@ inchworm_target:
 chrysalis_target:
 	cd Chrysalis && $(MAKE) UNSUPPORTED=yes $(CHRYSALIS_MAKE_FLAGS)
 
-plugins:
-	cd trinity-plugins && $(MAKE) 
-
 test:
 	sh ./util/support_scripts/install_tests.sh
 
@@ -36,7 +33,6 @@ test:
 clean:
 	cd Inchworm && make clean
 	cd Chrysalis && $(MAKE) clean UNSUPPORTED=yes
-	cd trinity-plugins && $(MAKE) clean 
 	cd sample_data/ && make clean
 
 

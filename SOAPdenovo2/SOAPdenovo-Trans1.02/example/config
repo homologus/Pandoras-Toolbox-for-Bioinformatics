@@ -1,6 +1,0 @@
-max_rd_len=150
-[LIB]
-avg_ins=259
-rank=1
-q1=read1.fq
-q2=read2.fq

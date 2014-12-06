@@ -1,7 +1,7 @@
 all: kmc
 	
-BOOST_LIB = /boost/boost_1_55_0/stage/lib
-BOOST_H = /boost/boost_1_55_0
+BOOST_LIB = /home/msamanta/0-Tools/boost_1_55_0/stage/lib
+BOOST_H = /home/msamanta/0-Tools/boost_1_55_0
 
 KMC_BIN_DIR = bin
 KMC_MAIN_DIR = kmer_counter

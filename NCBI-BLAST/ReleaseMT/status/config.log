@@ -671,6 +671,7 @@ configure: failed program was:
 | #define NCBI_DLL_SUPPORT 1
 | /* end confdefs.h.  */
 | #include <ac_nonexistent.h>
+configure:10926: WARNING: Proceeding at your own risk...
 configure:10965: checking whether cross-directory hard links work
 configure:10979: result: yes
 configure:11108: checking iostream usability
@@ -2399,7 +2400,7 @@ configure:14080: $? = 0
 configure:14094: result: yes
 configure:14101: checking for _doprnt
 configure:14157: /usr/bin/gcc  -std=gnu11 -fgnu89-inline -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.c -lm  -lpthread >&5
-/tmp/cc7gOx5C.o: In function `main':
+/tmp/ccTlVURT.o: In function `main':
 conftest.c:(.text+0xa): undefined reference to `_doprnt'
 collect2: error: ld returned 1 exit status
 configure:14163: $? = 1
@@ -2578,7 +2579,7 @@ configure:14334: $? = 0
 configure:14348: result: yes
 configure:14252: checking for getpassphrase
 configure:14308: /usr/bin/gcc  -std=gnu11 -fgnu89-inline -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.c -lm  -lpthread >&5
-/tmp/ccYxGxS8.o: In function `main':
+/tmp/cczfzVzB.o: In function `main':
 conftest.c:(.text+0xa): undefined reference to `getpassphrase'
 collect2: error: ld returned 1 exit status
 configure:14314: $? = 1
@@ -2741,7 +2742,7 @@ configure:14334: $? = 0
 configure:14348: result: yes
 configure:14252: checking for readpassphrase
 configure:14308: /usr/bin/gcc  -std=gnu11 -fgnu89-inline -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.c -lm  -lpthread >&5
-/tmp/ccwBqDIE.o: In function `main':
+/tmp/cc0wpQfV.o: In function `main':
 conftest.c:(.text+0xa): undefined reference to `readpassphrase'
 collect2: error: ld returned 1 exit status
 configure:14314: $? = 1
@@ -2943,7 +2944,7 @@ configure:14334: $? = 0
 configure:14348: result: yes
 configure:14252: checking for strlcat
 configure:14308: /usr/bin/gcc  -std=gnu11 -fgnu89-inline -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.c -lm  -lpthread >&5
-/tmp/cchwVOPh.o: In function `main':
+/tmp/ccEkK1JF.o: In function `main':
 conftest.c:(.text+0xa): undefined reference to `strlcat'
 collect2: error: ld returned 1 exit status
 configure:14314: $? = 1
@@ -3080,7 +3081,7 @@ configure: failed program was:
 configure:14348: result: no
 configure:14252: checking for strlcpy
 configure:14308: /usr/bin/gcc  -std=gnu11 -fgnu89-inline -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.c -lm  -lpthread >&5
-/tmp/ccjlZJdj.o: In function `main':
+/tmp/ccCJKqfM.o: In function `main':
 conftest.c:(.text+0xa): undefined reference to `strlcpy'
 collect2: error: ld returned 1 exit status
 configure:14314: $? = 1
@@ -3243,7 +3244,7 @@ configure:14334: $? = 0
 configure:14348: result: yes
 configure:14252: checking for sysmp
 configure:14308: /usr/bin/gcc  -std=gnu11 -fgnu89-inline -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.c -lm  -lpthread >&5
-/tmp/ccRPjGjF.o: In function `main':
+/tmp/ccXCZLOV.o: In function `main':
 conftest.c:(.text+0xa): undefined reference to `sysmp'
 collect2: error: ld returned 1 exit status
 configure:14314: $? = 1
@@ -5649,7 +5650,7 @@ configure:23422: $? = 0
 configure:23436: result: yes
 configure:23450: checking for inet_ntoa_r
 configure:23506: /usr/bin/g++  -std=gnu++11 -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.cpp -lnsl -lm  -lpthread >&5
-/tmp/ccALAvhA.o: In function `main':
+/tmp/cc31Ei7V.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `inet_ntoa_r'
 collect2: error: ld returned 1 exit status
 configure:23512: $? = 1
@@ -5846,7 +5847,7 @@ configure:23684: $? = 0
 configure:23697: result: yes
 configure:23714: checking for freehostent
 configure:23770: /usr/bin/g++  -std=gnu++11 -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.cpp -lnsl -lm  -lpthread >&5
-/tmp/ccILAOGQ.o: In function `main':
+/tmp/ccVAwbse.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `freehostent'
 collect2: error: ld returned 1 exit status
 configure:23776: $? = 1
@@ -6035,7 +6036,7 @@ configure:23796: $? = 0
 configure:23810: result: yes
 configure:23714: checking for getipnodebyaddr
 configure:23770: /usr/bin/g++  -std=gnu++11 -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.cpp -lnsl -lm  -lpthread >&5
-/tmp/ccEE6UJ2.o: In function `main':
+/tmp/ccp2W7wq.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `getipnodebyaddr'
 collect2: error: ld returned 1 exit status
 configure:23776: $? = 1
@@ -6217,7 +6218,7 @@ configure: failed program was:
 configure:23810: result: no
 configure:23714: checking for getipnodebyname
 configure:23770: /usr/bin/g++  -std=gnu++11 -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.cpp -lnsl -lm  -lpthread >&5
-/tmp/ccCa5Dx8.o: In function `main':
+/tmp/ccN99sCu.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `getipnodebyname'
 collect2: error: ld returned 1 exit status
 configure:23776: $? = 1
@@ -6415,7 +6416,7 @@ configure:23916: $? = 0
 configure:23930: result: yes
 configure:23942: checking for library containing kstat_open
 configure:23983: /usr/bin/g++  -std=gnu++11 -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.cpp -lm  -lpthread >&5
-/tmp/ccUTGryt.o: In function `main':
+/tmp/ccmLCN1E.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `kstat_open'
 collect2: error: ld returned 1 exit status
 configure:23989: $? = 1
@@ -6574,7 +6575,7 @@ configure: failed program was:
 |   return 0;
 | }
 configure:23983: /usr/bin/g++  -std=gnu++11 -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.cpp -lm  -lpthread >&5
-/tmp/ccP3xbho.o: In function `main':
+/tmp/ccExr1kK.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `kstat_open'
 collect2: error: ld returned 1 exit status
 configure:23989: $? = 1
@@ -6893,7 +6894,7 @@ configure: failed program was:
 configure:24033: result: no
 configure:24049: checking for library containing rstat
 configure:24090: /usr/bin/g++  -std=gnu++11 -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.cpp -lm  -lpthread >&5
-/tmp/ccdi5sfu.o: In function `main':
+/tmp/ccapNLKR.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `rstat'
 collect2: error: ld returned 1 exit status
 configure:24096: $? = 1
@@ -7052,7 +7053,7 @@ configure: failed program was:
 |   return 0;
 | }
 configure:24090: /usr/bin/g++  -std=gnu++11 -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.cpp -lm  -lpthread >&5
-/tmp/cc1H2ILA.o: In function `main':
+/tmp/ccKNqA7W.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `rstat'
 collect2: error: ld returned 1 exit status
 configure:24096: $? = 1
@@ -7211,7 +7212,7 @@ configure: failed program was:
 |   return 0;
 | }
 configure:24090: /usr/bin/g++  -std=gnu++11 -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.cpp -lrpcsvc  -lm  -lpthread >&5
-/tmp/cctA8DjG.o: In function `main':
+/tmp/ccyRd3PY.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `rstat'
 collect2: error: ld returned 1 exit status
 configure:24096: $? = 1
@@ -7372,7 +7373,7 @@ configure: failed program was:
 configure:24140: result: no
 configure:24164: checking for library containing setkey
 configure:24205: /usr/bin/gcc  -std=gnu11 -fgnu89-inline -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.c -lm  -lpthread >&5
-/tmp/ccdiXxJJ.o: In function `main':
+/tmp/ccmmQw36.o: In function `main':
 conftest.c:(.text+0xa): undefined reference to `setkey'
 collect2: error: ld returned 1 exit status
 configure:24211: $? = 1
@@ -7531,7 +7532,7 @@ configure: failed program was:
 |   return 0;
 | }
 configure:24205: /usr/bin/gcc  -std=gnu11 -fgnu89-inline -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.c -lm  -lpthread >&5
-/tmp/ccFFhFCP.o: In function `main':
+/tmp/ccgkbsw8.o: In function `main':
 conftest.c:(.text+0xa): undefined reference to `setkey'
 collect2: error: ld returned 1 exit status
 configure:24211: $? = 1
@@ -7698,7 +7699,7 @@ configure:24231: $? = 0
 configure:24255: result: -lcrypt
 configure:24281: checking for library containing dlopen
 configure:24322: /usr/bin/g++  -std=gnu++11 -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.cpp -lm  -lpthread >&5
-/tmp/ccZpGWQX.o: In function `main':
+/tmp/ccE9olYf.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `dlopen'
 collect2: error: ld returned 1 exit status
 configure:24328: $? = 1
@@ -7858,7 +7859,7 @@ configure: failed program was:
 |   return 0;
 | }
 configure:24322: /usr/bin/g++  -std=gnu++11 -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.cpp -lm  -lpthread >&5
-/tmp/ccti5Bf2.o: In function `main':
+/tmp/ccclgHVk.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `dlopen'
 collect2: error: ld returned 1 exit status
 configure:24328: $? = 1
@@ -8026,7 +8027,7 @@ configure:24348: $? = 0
 configure:24372: result: -ldl
 configure:24392: checking for library containing uuid_generate
 configure:24433: /usr/bin/g++  -std=gnu++11 -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.cpp -lm  -lpthread >&5
-/tmp/ccT1LJfd.o: In function `main':
+/tmp/ccaBgGZv.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `uuid_generate'
 collect2: error: ld returned 1 exit status
 configure:24439: $? = 1
@@ -8349,7 +8350,7 @@ configure: failed program was:
 configure:24483: result: no
 configure:24494: checking for library containing fuse_loop
 configure:24535: /usr/bin/g++  -std=gnu++11 -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.cpp -lm  -lpthread >&5
-/tmp/ccFL30nk.o: In function `main':
+/tmp/ccnrXPlw.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `fuse_loop'
 collect2: error: ld returned 1 exit status
 configure:24541: $? = 1
@@ -8672,7 +8673,7 @@ configure: failed program was:
 configure:24585: result: no
 configure:24602: checking for library containing clock_gettime
 configure:24643: /usr/bin/g++  -std=gnu++11 -o conftest -Wall -Wno-format-y2k -pthread  -O2 -fPIC -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic -pthread  -O conftest.cpp -lm  -lpthread >&5
-/tmp/ccDhT6kq.o: In function `main':
+/tmp/ccBJlUsC.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `clock_gettime'
 collect2: error: ld returned 1 exit status
 configure:24649: $? = 1
@@ -8833,7 +8834,7 @@ configure: failed program was:
 |   return 0;
 | }
 configure:24643: /usr/bin/g++  -std=gnu++11 -o conftest -Wall -Wno-format-y2k -pthread  -O2 -fPIC -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic -pthread  -O conftest.cpp -lm  -lpthread >&5
-/tmp/ccxtgsex.o: In function `main':
+/tmp/cclQ6JMI.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `clock_gettime'
 collect2: error: ld returned 1 exit status
 configure:24649: $? = 1
@@ -9002,7 +9003,7 @@ configure:24669: $? = 0
 configure:24693: result: -lrt
 configure:24711: checking for library containing cplus_demangle
 configure:24752: /usr/bin/g++  -std=gnu++11 -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.cpp -lm  -lpthread >&5
-/tmp/ccWhulIy.o: In function `main':
+/tmp/cc7doF4S.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `cplus_demangle'
 collect2: error: ld returned 1 exit status
 configure:24758: $? = 1
@@ -9164,7 +9165,7 @@ configure: failed program was:
 |   return 0;
 | }
 configure:24752: /usr/bin/g++  -std=gnu++11 -o conftest  -Wall -Wno-format-y2k  -pthread -fopenmp -O2 -fPIC  -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE   -D_MT -D_REENTRANT -D_THREAD_SAFE  -Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/4.7/../../../x86_64-linux-gnu -Wl,--enable-new-dtags -Wl,-export-dynamic  -pthread -fopenmp   -O conftest.cpp -lm  -lpthread >&5
-/tmp/ccsNfmvA.o: In function `main':
+/tmp/ccLtTPpY.o: In function `main':
 conftest.cpp:(.text+0x5): undefined reference to `cplus_demangle'
 collect2: error: ld returned 1 exit status
 configure:24758: $? = 1
@@ -16953,4 +16954,5 @@ config.status:1331: creating /home/msamanta/Electrophorus-Toolbox/NCBI-BLAST/Rel
 config.status:1331: creating /home/msamanta/Electrophorus-Toolbox/NCBI-BLAST/ReleaseMT/build/connect/services/Makefile
 config.status:1331: creating /home/msamanta/Electrophorus-Toolbox/NCBI-BLAST/./Makefile
 config.status:1331: creating /home/msamanta/Electrophorus-Toolbox/NCBI-BLAST/ReleaseMT/inc/ncbiconf_unix.h
+config.status:1759: /home/msamanta/Electrophorus-Toolbox/NCBI-BLAST/ReleaseMT/inc/ncbiconf_unix.h is unchanged
 config.status:1772: executing default commands
