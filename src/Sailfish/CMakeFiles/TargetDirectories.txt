@@ -1,0 +1,3 @@
+/home/msamanta/Electrophorus-Toolbox/Sailfish/CMakeFiles/sailfish.dir
+/home/msamanta/Electrophorus-Toolbox/Sailfish/CMakeFiles/sailfish_core.dir
+/home/msamanta/Electrophorus-Toolbox/Sailfish/CMakeFiles/salmon.dir

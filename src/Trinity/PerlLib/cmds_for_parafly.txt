@@ -1,0 +1,1 @@
+this_command_should_fail

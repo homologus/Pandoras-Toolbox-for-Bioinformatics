@@ -1,0 +1,10 @@
+# $Id: Makefile.connext.lib.unix 409718 2013-08-09 15:29:16Z ucko $
+
+# Adjust ICC flags to avoid problematic references to
+# __intel_sse2_str* functions (as of ICC [20]13)
+
+ifeq "$(COMPILER)-$(DEBUG_SFX)$(DLL)" "icc-Release"
+  ncbi_localnet.o: $(srcdir)/ncbi_localnet.c
+	$(CC_WRAPPER) $(CC) $(CFLAGS_ALL) -fno-builtin-strcspn $< -o $@ \
+	    $(CC_FILTER)
+endif

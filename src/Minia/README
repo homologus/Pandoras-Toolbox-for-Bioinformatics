@@ -1,0 +1,18 @@
+type `make` then `./minia` for usage.
+
+short manual: ./manual/manual.pdf
+
+we have set up a Q&A website, see the Support section in http://minia.genouest.org
+
+to contact an author directly: rayan.chikhi@ens-cachan.org
+
+if you read the source code, disregard any code where (order > 0).
+
+[internal information] list of projects which import minia as svn:external:
+
+dsk
+minia-graph
+ultimategf
+kissnp2
+mapsembler2
+kmergenie
