@@ -1,4 +1,0 @@
-[AddToProject]
-ResourceFiles    = ptb_gui.rc
-SourceFiles      = msvc71_project__ msvc71_project___
-LIB              = xser msbuild_dataobj

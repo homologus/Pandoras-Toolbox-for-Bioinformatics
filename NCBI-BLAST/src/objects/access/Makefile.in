@@ -1,3 +1,0 @@
-ASN_PROJ = access
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

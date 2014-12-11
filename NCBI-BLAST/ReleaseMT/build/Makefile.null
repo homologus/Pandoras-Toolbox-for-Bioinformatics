@@ -1,2 +1,0 @@
-### Dummy makefile, always succeeds
-.DEFAULT:;

@@ -1,4 +1,0 @@
-USR_PROJ = sources
-LIB_PROJ = mmdb
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

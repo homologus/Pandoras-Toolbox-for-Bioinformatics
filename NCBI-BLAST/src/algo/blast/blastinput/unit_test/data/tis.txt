@@ -1,4 +1,0 @@
-gnl|ti|12345
-gnl|ti|12347
-gnl|ti|12348
-gnl|ti|10000

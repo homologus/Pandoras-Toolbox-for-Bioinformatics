@@ -1,2 +1,0 @@
-MODULE_PATH = objects/pcsubstance
-MODULE_IMPORT = objects/general/general objects/pub/pub

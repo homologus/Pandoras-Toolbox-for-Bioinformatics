@@ -1,2 +1,0 @@
-MODULE_PATH = objects/blastdb
-MODULE_IMPORT = objects/seqloc/seqloc

@@ -1,8 +1,0 @@
-[-]
-_export = NCBI_TAXON3_EXPORT
-
-[NCBI-Organism]
-_namespace=ncbi::objects
-
-[SequenceOfInt]
-_type = vector

@@ -1,3 +1,0 @@
-ASN_PROJ = insdseq
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

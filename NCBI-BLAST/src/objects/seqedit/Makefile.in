@@ -1,3 +1,0 @@
-ASN_PROJ = seqedit
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

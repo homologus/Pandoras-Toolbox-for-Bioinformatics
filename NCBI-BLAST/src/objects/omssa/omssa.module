@@ -1,2 +1,0 @@
-MODULE_PATH   = objects/omssa
-MODULE_IMPORT = objects/seq/seq

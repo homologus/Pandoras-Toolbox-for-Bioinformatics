@@ -1,5 +1,0 @@
-[-]
-_export = NCBI_OBJCOORDS_EXPORT
-
-[HGVS-Coordinate]
-;marker-pos._type       = TSeqPos

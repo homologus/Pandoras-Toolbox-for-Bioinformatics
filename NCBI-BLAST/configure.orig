@@ -1,3 +1,0 @@
-#!/bin/sh
-srcdir=`dirname $0`
-exec $srcdir/src/build-system/configure --srcdir=$srcdir ${1+"$@"}

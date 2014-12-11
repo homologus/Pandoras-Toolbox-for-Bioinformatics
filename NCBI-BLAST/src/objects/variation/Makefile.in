@@ -1,3 +1,0 @@
-ASN_PROJ = variation
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

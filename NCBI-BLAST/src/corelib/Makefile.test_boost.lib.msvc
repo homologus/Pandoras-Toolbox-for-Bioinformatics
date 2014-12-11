@@ -1,3 +1,0 @@
-[AddToProject]
-HeadersInInclude = test_boost.hpp
-HeadersInSrc = !

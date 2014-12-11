@@ -1,7 +1,0 @@
-[-]
-_export = NCBI_GENOME_COLLECTION_EXPORT
-
-[GC-Scaf-stats]
-value._type = Uint8
-
-

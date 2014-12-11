@@ -1,9 +1,0 @@
-[-]
-# _export        = NCBI_GCClient_EXPORT
-clients        = genomic_collections_cli
-
-[genomic_collections_cli]
-class   = CGenomicCollectionsService
-service = GenomicCollections
-request = GCClientRequest
-reply   = GCClientResponse

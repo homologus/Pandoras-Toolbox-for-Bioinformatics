@@ -1,3 +1,0 @@
-ASN_PROJ = gbseq
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

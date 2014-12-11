@@ -1,6 +1,0 @@
-[-]
-_export = NCBI_TAXON1_EXPORT
-
-[Taxon1-req]
-id4gi._type = ncbi::TGi
-id4gi._storage_type = ncbi::TIntId

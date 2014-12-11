@@ -1,3 +1,0 @@
-ASN_PROJ = featdef
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

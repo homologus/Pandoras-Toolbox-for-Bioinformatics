@@ -1,5 +1,0 @@
-# $Id: Makefile.configurables.null 109635 2007-08-29 15:01:25Z ucko $
-
-configurables:;
-
-.PHONY: configurables

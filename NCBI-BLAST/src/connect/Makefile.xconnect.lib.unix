@@ -1,2 +1,0 @@
-# $Id: Makefile.xconnect.lib.unix 409718 2013-08-09 15:29:16Z ucko $
-include $(srcdir)/Makefile.connect.lib.unix

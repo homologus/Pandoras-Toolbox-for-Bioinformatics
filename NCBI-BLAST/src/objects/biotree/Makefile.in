@@ -1,3 +1,0 @@
-ASN_PROJ = biotree
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

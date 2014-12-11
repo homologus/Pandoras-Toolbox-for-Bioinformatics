@@ -1,2 +1,0 @@
-MODULE_PATH   = objects/entrezgene
-MODULE_IMPORT = objects/seqfeat/seqfeat objects/general/general objects/seqloc/seqloc objects/pub/pub

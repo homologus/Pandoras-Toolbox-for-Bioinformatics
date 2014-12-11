@@ -1,3 +1,0 @@
-ASN_PROJ = gbproj
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

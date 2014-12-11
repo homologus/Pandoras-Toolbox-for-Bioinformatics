@@ -1,3 +1,0 @@
-ASN_PROJ = omssa
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

@@ -1,3 +1,0 @@
-MODULE_SOURCE = objects/medline.asn
-MODULE_PATH = objects/medline
-MODULE_IMPORT = objects/general/general objects/biblio/biblio

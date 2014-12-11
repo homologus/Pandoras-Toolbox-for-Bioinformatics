@@ -1,3 +1,0 @@
-ASN_PROJ = scoremat
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

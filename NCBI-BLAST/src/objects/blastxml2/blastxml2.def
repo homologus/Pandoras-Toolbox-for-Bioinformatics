@@ -1,3 +1,0 @@
-[-]
-_export = NCBI_BLASTXML2_EXPORT
-_namespace = ncbi::objects::blastxml2

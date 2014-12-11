@@ -1,2 +1,0 @@
-MODULE_PATH = internal/homologene
-MODULE_IMPORT = objects/general/general objects/seqalign/seqalign objects/seqloc/seqloc

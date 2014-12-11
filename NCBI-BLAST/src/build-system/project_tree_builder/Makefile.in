@@ -1,5 +1,0 @@
-APP_PROJ = project_tree_builder
-SUB_PROJ = msbuild
-
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

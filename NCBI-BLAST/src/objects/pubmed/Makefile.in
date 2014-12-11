@@ -1,3 +1,0 @@
-ASN_PROJ = pubmed
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

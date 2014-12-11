@@ -1,3 +1,0 @@
-ASN_PROJ = submit
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

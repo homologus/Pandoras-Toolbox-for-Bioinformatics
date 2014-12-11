@@ -1,6 +1,0 @@
-[-]
-_export = NCBI_DOCSUM_EXPORT
-
-[ExchangeSet]
-summary.attlist.totalSeqLength._type=Int8
-

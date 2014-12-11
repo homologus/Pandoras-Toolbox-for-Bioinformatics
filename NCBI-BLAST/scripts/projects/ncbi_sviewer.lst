@@ -1,9 +1,0 @@
-#include "ncbi_gui_base.lst"
-internal/gbench
--internal/gbench/packages*
-internal/tmsmart/smartnetclient
-misc/third_party
--algo/blast/unit_tests
--[^gi].*/app
--[^g].*/unit_test
--algo/ms

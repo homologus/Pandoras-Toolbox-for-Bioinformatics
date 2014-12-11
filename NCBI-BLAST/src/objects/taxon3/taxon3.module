@@ -1,2 +1,0 @@
-MODULE_PATH   = objects/taxon3
-MODULE_IMPORT = objects/seqfeat/seqfeat

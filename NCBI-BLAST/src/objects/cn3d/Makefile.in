@@ -1,3 +1,0 @@
-ASN_PROJ = cn3d
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

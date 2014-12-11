@@ -1,3 +1,0 @@
-ASN_PROJ = pub
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

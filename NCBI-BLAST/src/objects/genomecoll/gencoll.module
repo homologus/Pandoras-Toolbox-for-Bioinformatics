@@ -1,2 +1,0 @@
-MODULE_PATH=objects/genomecoll
-MODULE_IMPORT=objects/genomecoll/genome_collection objects/general/general objects/seqloc/seqloc

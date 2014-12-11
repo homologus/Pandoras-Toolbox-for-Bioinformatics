@@ -1,3 +1,0 @@
-ASN_PROJ = biblio
-srcdir = @srcdir@
-include @builddir@/Makefile.meta

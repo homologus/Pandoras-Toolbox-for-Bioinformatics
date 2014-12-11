@@ -1,3 +1,0 @@
-ASN_PROJ = seqsplit
-srcdir = @srcdir@
-include @builddir@/Makefile.meta
