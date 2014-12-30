@@ -1,1 +1,0 @@
-/usr/bin/c++       CMakeFiles/sailfish.dir/Sailfish.o  -o sailfish -rdynamic -L/external/install/lib -L/home/msamanta/Electrophorus-Toolbox/Sailfish libsailfish_core.a -lgff /external/install/lib/libcmph.a /external/install/lib/libjellyfish-2.0.a -lm -lshark -lpthread -Wl,-rpath,"\$ORIGIN/../lib:\$ORIGIN/../../lib:\$ORIGIN/" 

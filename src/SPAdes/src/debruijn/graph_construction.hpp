@@ -91,6 +91,8 @@ size_t ConstructGraphUsingOldIndex(Readers& streams, Graph& g,
 	INFO("Condensing graph");
 	DeBruijnGraphConstructor<Graph, InnerIndex> g_c(g, debruijn);
 	TRACE("Constructor ok");
+	VERIFY(!index.IsAttached());
+	index.Attach();
 	g_c.ConstructGraph(100, 10000, 1.2); // TODO: move magic constants to config
 	INFO("Graph condensed");
 
@@ -119,9 +121,9 @@ void EarlyClipTips(size_t k, const debruijn_config::construction params, size_t 
 }
 
 template<class Graph, class Read, class Index>
-size_t ConstructGraphUsingExtentionIndex(const debruijn_config::construction params,
+ReadStatistics ConstructGraphUsingExtentionIndex(const debruijn_config::construction params,
 		io::ReadStreamList<Read>& streams, Graph& g,
-		Index& index, io::SingleStreamPtr contigs_stream = io::SingleStreamPtr(), size_t read_buffer_size = 0) {
+		Index& index, io::SingleStreamPtr contigs_stream = io::SingleStreamPtr()) {
 
     size_t k = g.k();
 	INFO("Constructing DeBruijn graph for k=" << k);
@@ -136,57 +138,52 @@ size_t ConstructGraphUsingExtentionIndex(const debruijn_config::construction par
 	ExtensionIndex ext((unsigned) k, index.inner_index().workdir());
 
 	//fixme hack
-	size_t rl = ExtensionIndexBuilder().BuildExtensionIndexFromStream(ext, streams, (contigs_stream == 0) ? 0 : &(*contigs_stream), params.read_buffer_size);
+	ReadStatistics stats = ExtensionIndexBuilder().BuildExtensionIndexFromStream(ext, streams, (contigs_stream == 0) ? 0 : &(*contigs_stream), params.read_buffer_size);
 
-	EarlyClipTips(k, params, rl, ext);
+	EarlyClipTips(k, params, stats.max_read_length_, ext);
 
 	INFO("Condensing graph");
-	index.Detach();
+	VERIFY(!index.IsAttached());
 	DeBruijnGraphExtentionConstructor<Graph> g_c(g, ext);
 	g_c.ConstructGraph(100, 10000, 1.2, params.keep_perfect_loops);//TODO move these parameters to config
+
+	INFO("Building index with from graph")
+    //todo pass buffer size
+    index.Refill();
 	index.Attach();
 
-    typedef typename Index::InnerIndexT InnerIndex;
-    typedef typename EdgeIndexHelper<InnerIndex>::CoverageAndGraphPositionFillingIndexBuilderT IndexBuilder;
-	INFO("Building index with coverage from graph")
-	IndexBuilder().BuildIndexFromGraph(index.inner_index(), g, read_buffer_size);
-	IndexBuilder().ParallelFillCoverage(index.inner_index(), streams);
-	return rl;
+	return stats;
 }
 
 template<class Graph, class Index, class Streams>
-size_t ConstructGraph(const debruijn_config::construction &params,
-                      Streams& streams, Graph& g,
-		 Index& index, io::SingleStreamPtr contigs_stream = io::SingleStreamPtr()) {
-	if(params.con_mode == construction_mode::con_extention) {
-		return ConstructGraphUsingExtentionIndex(params, streams, g, index, contigs_stream, params.read_buffer_size);
+ReadStatistics ConstructGraph(const debruijn_config::construction &params,
+                              Streams& streams, Graph& g,
+                              Index& index, io::SingleStreamPtr contigs_stream = io::SingleStreamPtr()) {
+	if (params.con_mode == construction_mode::con_extention) {
+		return ConstructGraphUsingExtentionIndex(params, streams, g, index, contigs_stream);
 //	} else if(params.con_mode == construction_mode::con_old){
 //		return ConstructGraphUsingOldIndex(k, streams, g, index, contigs_stream);
 	} else {
 		INFO("Invalid construction mode")
 		VERIFY(false);
-		return 0;
+		return {};
 	}
 }
 
 template<class Graph, class Index, class Streams>
-size_t ConstructGraphWithCoverage(const debruijn_config::construction &params,
+ReadStatistics ConstructGraphWithCoverage(const debruijn_config::construction &params,
                                   Streams& streams, Graph& g,
                                   Index& index, FlankingCoverage<Graph>& flanking_cov,
                                   io::SingleStreamPtr contigs_stream = io::SingleStreamPtr()) {
-	size_t rl = ConstructGraph(params, streams, g, index, contigs_stream);
+    ReadStatistics rs = ConstructGraph(params, streams, g, index, contigs_stream);
 
-	INFO("Filling coverage and flanking coverage from index");
-	FillCoverageAndFlanking(index.inner_index(), g, flanking_cov);
-	return rl;
+    typedef typename Index::InnerIndexT InnerIndex;
+    typedef typename EdgeIndexHelper<InnerIndex>::CoverageAndGraphPositionFillingIndexBuilderT IndexBuilder;
+    INFO("Filling coverage index")
+    IndexBuilder().ParallelFillCoverage(index.inner_index(), streams);
+    INFO("Filling coverage and flanking coverage from index");
+    FillCoverageAndFlanking(index.inner_index(), g, flanking_cov);
+    return rs;
 }
-
-//template<class Graph, class Reader, class Index>
-//size_t ConstructGraphWithCoverageFromStream(size_t k,
-//        Reader& stream, Graph& g,
-//        Index& index, SingleReadStream* contigs_stream = 0) {
-//    io::ReadStreamVector<io::IReader<typename Reader::read_type>> streams(stream);
-//    return ConstructGraph(k, streams, g, index, contigs_stream);
-//}
 
 }

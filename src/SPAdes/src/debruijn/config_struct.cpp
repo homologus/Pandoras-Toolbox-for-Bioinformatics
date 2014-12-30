@@ -20,6 +20,7 @@ struct convert<io::SequencingLibrary<debruijn_graph::debruijn_config::DataSetDat
       // Now, save the remaining stuff
       auto const& data = rhs.data();
       node["read length"]                = data.read_length;
+      node["average read length"]        = data.avg_read_length;
       node["insert size mean"]           = data.mean_insert_size;
       node["insert size deviation"]      = data.insert_size_deviation;
       node["insert size left quantile"]  = data.insert_size_left_quantile;
@@ -40,7 +41,8 @@ struct convert<io::SequencingLibrary<debruijn_graph::debruijn_config::DataSetDat
       // Now load the remaining stuff
       auto& data = rhs.data();
       data.read_length                = node["read length"].as<size_t>(0);
-      data.mean_insert_size           = node["insert size mean"].as<double>(0);
+      data.avg_read_length            = node["average read length"].as<double>(0.0);
+      data.mean_insert_size           = node["insert size mean"].as<double>(0.0);
       data.insert_size_deviation      = node["insert size deviation"].as<double>(0.0);
       data.insert_size_left_quantile  = node["insert size left quantile"].as<double>(0.0);
       data.insert_size_right_quantile = node["insert size right quantile"].as<double>(0.0);
@@ -62,6 +64,7 @@ struct convert<debruijn_graph::debruijn_config::dataset> {
 
       node["reads"] = rhs.reads;
       node["max read length"] = rhs.RL();
+      node["avg read length"] = rhs.aRL();
       node["average coverage"] = rhs.avg_coverage();
 
       return node;
@@ -69,6 +72,7 @@ struct convert<debruijn_graph::debruijn_config::dataset> {
 
   static bool decode(const Node& node, debruijn_graph::debruijn_config::dataset &rhs) {
       rhs.set_RL(node["max read length"].as<size_t>(0));
+      rhs.set_aRL(node["avg read length"].as<double>(0.0));
       rhs.set_avg_coverage(node["average coverage"].as<double>(0.0));
       rhs.reads = node["reads"];
 
@@ -97,16 +101,19 @@ void load_lib_data(const std::string& prefix) {
   // Now, infer the common parameters
   const auto& reads = cfg::get().ds.reads;
   size_t max_rl = 0;
-  double avg_cov = 0.0;
+  double avg_cov = 0.0, avg_rl;
   for (auto it = reads.library_begin(), et = reads.library_end(); it != et; ++it) {
       auto const& data = it->data();
       if (it->is_graph_contructable())
           max_rl = std::max(max_rl, data.read_length);
       if (data.average_coverage > 0)
           avg_cov = data.average_coverage;
+      if (data.avg_read_length > 0)
+          avg_rl = data.avg_read_length;
   }
 
   cfg::get_writable().ds.set_RL(max_rl);
+  cfg::get_writable().ds.set_aRL(avg_rl);
   cfg::get_writable().ds.set_avg_coverage(avg_cov);
 }
 
@@ -200,15 +207,15 @@ void load(debruijn_config::simplification::topology_tip_clipper& ttc,
 }
 
 void load(debruijn_config::simplification::relative_coverage_comp_remover& rcc,
-          boost::property_tree::ptree const& pt, bool /*complete*/) {
+          boost::property_tree::ptree const& pt, bool complete) {
   using config_common::load;
-  load(rcc.enabled, pt, "enabled");
-  load(rcc.coverage_gap, pt, "coverage_gap");
-  load(rcc.length_coeff, pt, "max_length_coeff");
-  load(rcc.tip_allowing_length_coeff, pt, "max_length_with_tips_coeff");
-  load(rcc.vertex_count_limit, pt, "max_vertex_cnt");
-  load(rcc.max_ec_length_coefficient, pt, "max_ec_length_coefficient");
-  load(rcc.max_coverage_coeff, pt, "max_coverage_coeff");
+  load(rcc.enabled, pt, "enabled", complete);
+  load(rcc.coverage_gap, pt, "coverage_gap", complete);
+  load(rcc.length_coeff, pt, "max_length_coeff", complete);
+  load(rcc.tip_allowing_length_coeff, pt, "max_length_with_tips_coeff", complete);
+  load(rcc.vertex_count_limit, pt, "max_vertex_cnt", complete);
+  load(rcc.max_ec_length_coefficient, pt, "max_ec_length_coefficient", complete);
+  load(rcc.max_coverage_coeff, pt, "max_coverage_coeff", complete);
 }
 
 void load(debruijn_config::simplification::isolated_edges_remover& ier,
@@ -221,14 +228,12 @@ void load(debruijn_config::simplification::isolated_edges_remover& ier,
 }
 
 void load(debruijn_config::simplification::complex_bulge_remover& cbr,
-          boost::property_tree::ptree const& pt, bool /*complete*/) {
+          boost::property_tree::ptree const& pt, bool complete) {
   using config_common::load;
 
   load(cbr.enabled, pt, "enabled");
-  load(cbr.pics_enabled, pt, "pics_enabled");
-  load(cbr.folder, pt, "folder");
-  load(cbr.max_relative_length, pt, "max_relative_length");
-  load(cbr.max_length_difference, pt, "max_length_difference");
+  load(cbr.max_relative_length, pt, "max_relative_length", complete);
+  load(cbr.max_length_difference, pt, "max_length_difference", complete);
 }
 
 void load(debruijn_config::simplification::erroneous_connections_remover& ec,
@@ -317,20 +322,6 @@ inline void load(debruijn_config::ambiguous_distance_estimator& amde,
     load(amde.relative_seq_threshold,		pt,		"relative_seq_threshold");
 }
 
-void load(debruijn_config::coverage_based_rr& cbrr,
-          boost::property_tree::ptree const& pt, bool /*complete*/) {
-  using config_common::load;
-
-    load(cbrr.coverage_threshold_one_list, pt, "coverage_threshold_one_list");
-    load(cbrr.coverage_threshold_match, pt, "coverage_threshold_match");
-    load(cbrr.coverage_threshold_global, pt, "coverage_threshold_global");
-    load(cbrr.tandem_ratio_lower_threshold, pt, "tandem_ratio_lower_threshold");
-    load(cbrr.tandem_ratio_upper_threshold, pt, "tandem_ratio_upper_threshold");
-    load(cbrr.repeat_length_upper_threshold, pt, "repeat_length_upper_threshold");
-
-}
-
-
 void load(debruijn_config::pacbio_processor& pb,
           boost::property_tree::ptree const& pt, bool /*complete*/) {
   using config_common::load;
@@ -381,6 +372,8 @@ void load(debruijn_config::kmer_coverage_model& kcm,
   using config_common::load;
   load(kcm.probability_threshold, pt, "probability_threshold");
   load(kcm.strong_probability_threshold, pt, "strong_probability_threshold");
+  load(kcm.coverage_threshold, pt, "coverage_threshold");
+  load(kcm.use_coverage_threshold, pt, "use_coverage_threshold");
 }
 
 void load(debruijn_config::dataset& ds,
@@ -422,6 +415,17 @@ void load_reference_genome(debruijn_config::dataset& ds,
   ds.reference_genome = genome.sequence();
 }
 
+void load(debruijn_config::simplification::presimplification& presimp,
+          boost::property_tree::ptree const& pt, bool complete) {
+  using config_common::load;
+
+  load(presimp.enabled, pt, "enabled", complete);
+  load(presimp.parallel, pt, "parallel", complete);
+  load(presimp.tip_condition, pt, "tip_condition", complete); // pre tip clipper:
+  load(presimp.ec_condition, pt, "ec_condition", complete); // pre ec remover:
+  load(presimp.ier, pt, "ier", complete);
+}
+
 void load(debruijn_config::simplification& simp,
           boost::property_tree::ptree const& pt, bool complete) {
   using config_common::load;
@@ -439,6 +443,11 @@ void load(debruijn_config::simplification& simp,
   load(simp.ier, pt, "ier", complete); // isolated edges remover
   load(simp.cbr, pt, "cbr", complete); // complex bulge remover
   load(simp.her, pt, "her", complete); // hidden ec remover
+  load(simp.fast_features, pt, "fast_features", complete); // master switch for speed-up tricks
+  load(simp.fast_activation_cov, pt, "fast_activation_cov", complete);
+  load(simp.presimp, pt, "presimp", complete); // presimplification
+  load(simp.persistent_cycle_iterators, pt, "persistent_cycle_iterators", complete);
+  load(simp.disable_br_in_cycle, pt, "disable_br_in_cycle", complete);
 //  load(simp.stats_mode, pt, "stats_mode", complete); // temporary stats counting mode
 }
 
@@ -564,10 +573,6 @@ void load(debruijn_config& cfg, boost::property_tree::ptree const& pt,
   load(cfg.use_additional_contigs, pt, "use_additional_contigs");
   load(cfg.use_unipaths, pt, "use_unipaths");
 
-  load(cfg.coverage_based_rr_on, pt, "coverage_based_rr_on");
-  if (cfg.coverage_based_rr_on) {
-    load (cfg.cbrr, pt, "coverage_based_rr");
-  }
   load(cfg.pb, pt, "pacbio_processor");
 
   load(cfg.additional_contigs, pt, "additional_contigs");
@@ -576,7 +581,6 @@ void load(debruijn_config& cfg, boost::property_tree::ptree const& pt,
   load(cfg.single_reads_rr, pt, "single_reads_rr");
   cfg.use_single_reads = false;
 
-  load(cfg.divide_clusters, pt, "divide_clusters");
   load(cfg.mismatch_careful, pt, "mismatch_careful");
   load(cfg.correct_mismatches, pt, "correct_mismatches");
   load(cfg.paired_info_statistics, pt, "paired_info_statistics");
@@ -603,7 +607,6 @@ void load(debruijn_config& cfg, boost::property_tree::ptree const& pt,
   cfg.paired_read_prefix = cfg.temp_bin_reads_path + "_paired";
   cfg.single_read_prefix = cfg.temp_bin_reads_path + "_single";
 
-  load(cfg.use_multithreading, pt, "use_multithreading");
   load(cfg.max_threads, pt, "max_threads");
   // Fix number of threads according to OMP capabilities.
   cfg.max_threads = std::min(cfg.max_threads, (size_t) omp_get_max_threads());
@@ -638,7 +641,7 @@ void load(debruijn_config& cfg, boost::property_tree::ptree const& pt,
   }
 
   cfg.pe_params.name = cfg.ds.single_cell ? "singlecell" : "multicell";
-  load(cfg.pe_params, pt, "andrey_params");
+  load(cfg.pe_params, pt, "path_extend_params");
   if (!cfg.developer_mode) {
       cfg.pe_params.debug_output = false;
       cfg.pe_params.viz.DisableAll();
@@ -649,8 +652,6 @@ void load(debruijn_config& cfg, boost::property_tree::ptree const& pt,
       cfg.pe_params.param_set.scaffolder_options.on = false;
   }
   load(cfg.avoid_rc_connections, pt, "avoid_rc_connections");
-
-  load(cfg.mask_all, pt, "mask_all");
 
   load(cfg.con, pt, "construction");
   load(cfg.gc, pt, "gap_closer");
@@ -664,18 +665,6 @@ void load(debruijn_config& cfg, boost::property_tree::ptree const& pt,
   load(cfg.sensitive_map, pt, "sensitive_mapper");
   load(cfg.flanking_range, pt, "flanking_range");
 
-  load(cfg.simp, pt, "default");
-
-  if (cfg.ds.single_cell)
-    load(cfg.simp, pt, "sc", false);
-
-  if (cfg.mismatch_careful)
-    load(cfg.simp, pt, "careful", false);
-
-  if (cfg.diploid_mode)
-      load(cfg.simp, pt, "diploid_simp", false);
-
-  cfg.simp.cbr.folder = cfg.output_dir + cfg.simp.cbr.folder + "/";
   load(cfg.info_printers, pt, "info_printers");
   if (!cfg.developer_mode) {
       for (auto iter = cfg.info_printers.begin(); iter != cfg.info_printers.end(); ++iter) {
@@ -684,6 +673,22 @@ void load(debruijn_config& cfg, boost::property_tree::ptree const& pt,
   }
   load_reads(cfg.ds, cfg.input_dir);
   load_reference_genome(cfg.ds, cfg.input_dir);
+
+  cfg.need_mapping = cfg.developer_mode || cfg.correct_mismatches 
+                        || cfg.gap_closer_enable || cfg.rr_enable;
+
+  load(cfg.simp, pt, "default");
+
+  if (cfg.ds.single_cell)
+    load(cfg.simp, pt, "sc", false);
+
+  if (cfg.mismatch_careful)
+    load(cfg.simp, pt, "careful", false);
+
+  if (cfg.diploid_mode) {
+    load(cfg.simp, pt, "diploid_simp", false);
+  }
+
 }
 
 void load(debruijn_config& cfg, const std::string &filename) {

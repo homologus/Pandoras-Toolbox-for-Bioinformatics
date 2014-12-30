@@ -26,6 +26,7 @@ enum class LibraryType {
   HQMatePairs,
   PacBioReads,
   SangerReads,
+  NanoporeReads,
   TrustedContigs,
   UntrustedContigs,
 };
@@ -155,6 +156,7 @@ class SequencingLibraryBase {
             type_ == io::LibraryType::MatePairs ||
             type_ == io::LibraryType::PacBioReads ||
             type_ == io::LibraryType::SangerReads ||
+            type_ == io::LibraryType::NanoporeReads ||
             type_ == io::LibraryType::TrustedContigs ||
             type_ == io::LibraryType::UntrustedContigs);
   }
@@ -162,6 +164,7 @@ class SequencingLibraryBase {
   bool is_pacbio_alignable() const {
     return (type_ == io::LibraryType::PacBioReads ||
             type_ == io::LibraryType::SangerReads ||
+            type_ == io::LibraryType::NanoporeReads ||
             type_ == io::LibraryType::TrustedContigs ||
             type_ == io::LibraryType::UntrustedContigs);
   }
@@ -209,15 +212,14 @@ class DataSet {
 
   void load(const std::string &filename) {
     YAML::Node config = YAML::LoadFile(filename);
-
     std::string input_dir = path::parent_path(filename);
     if (input_dir[input_dir.length() - 1] != '/')
         input_dir += '/';
 
     load(config);
-
-    for (auto it = libraries_.begin(); it != libraries_.end(); ++it)
+    for (auto it = libraries_.begin(); it != libraries_.end(); ++it) {
       it->update_relative_reads_filenames(input_dir);
+    }
   }
 
   void save(const std::string &filename) const {
@@ -227,8 +229,9 @@ class DataSet {
 
   void load(const YAML::Node &node) {
     clear();
-    for (YAML::const_iterator it = node.begin(); it != node.end(); ++it)
+    for (YAML::const_iterator it = node.begin(); it != node.end(); ++it) {
       libraries_.push_back(it->as<Library>());
+    }
   }
 
   void clear() { libraries_.clear(); }

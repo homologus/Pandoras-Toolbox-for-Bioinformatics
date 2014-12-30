@@ -23,6 +23,7 @@
 #include "global.h"
 #include "stdinc.h"
 #include "core.h"
+#include <unistd.h>
 
 #include "multi_threads.h"
 #include "build_graph.h"
@@ -32,7 +33,7 @@
 #include "seq_util.h"
 #include "convert_soapdenovo.h"
 
-
+using namespace std;
 static int LOAD_GRAPH = 0, BUILD_DBG = 1, BUILD_EDGES = 1, BUILD_PREARCS = 1;
 //static    int run_mode=0;
 

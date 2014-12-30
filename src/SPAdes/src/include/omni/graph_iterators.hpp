@@ -65,6 +65,17 @@ class SmartSetIterator : public SmartIterator<Graph, ElementId, Comparator> {
         this->insert(begin, end);
     }
 
+    SmartSetIterator(const Graph &graph,
+                     const Comparator& comparator = Comparator())
+            : SmartIterator<Graph, ElementId, Comparator>(
+                graph, "SmartSet " + ToString(this), false, comparator) {
+    }
+
+    template<typename InputIterator>
+    void insert(InputIterator begin, InputIterator end) {
+        QueueIterator<ElementId, Comparator>::insert(begin, end);
+    }
+
     virtual ~SmartSetIterator() {}
 };
 
@@ -199,55 +210,135 @@ class SmartEdgeIterator : public SmartIterator<Graph, typename Graph::EdgeId,
     }
 };
 
+//todo return verifies when they can be switched off
 template<class Graph>
-class ConstEdgeIterator :
-        public boost::iterator_facade<ConstEdgeIterator<Graph>,
-                                      typename Graph::EdgeId const,
-                                      boost::forward_traversal_tag,
-                                      typename Graph::EdgeId const> {
-  public:
-    ConstEdgeIterator(const Graph &g)
-            : graph_(g),
-              cvertex_(g.begin()), evertex_(g.end()),
-              cedge_(g.out_begin(*cvertex_)), eedge_(g.out_end(*cvertex_)) {
-        skip_empty();
+class GraphEdgeIterator : public boost::iterator_facade<GraphEdgeIterator<Graph>,
+        typename Graph::EdgeId, boost::forward_traversal_tag, typename Graph::EdgeId> {
+    typedef typename Graph::EdgeId EdgeId;
+    typedef typename Graph::VertexIt const_vertex_iterator;
+    typedef typename Graph::edge_const_iterator const_edge_iterator;
+public:
+
+    explicit GraphEdgeIterator(const Graph& g, const_vertex_iterator v_it)
+            : g_(g),
+              v_it_(v_it) {
+    	if (v_it_ != g_.end()) {
+    	    e_it_ = g_.out_begin(*v_it_);
+            Skip();
+    	}
     }
 
-    bool IsEnd() const {
-        return cvertex_ == evertex_;
-    }
-
-  private:
+private:
     friend class boost::iterator_core_access;
 
-    void skip_empty() {
-        while (cedge_ == eedge_) {
-            if (++cvertex_ == evertex_)
-                break;
-            cedge_ = graph_.out_begin(*cvertex_);
-            eedge_ = graph_.out_end(*cvertex_);
-        }
+    void Skip() {
+        //VERIFY(v_it_ != g_.end());
+        while (e_it_ == g_.out_end(*v_it_)) {
+    	    v_it_++;
+            if (v_it_ == g_.end()) 
+                return;
+            e_it_ = g_.out_begin(*v_it_);
+    	}
     }
 
     void increment() {
-        ++cedge_;
-        skip_empty();
+        if (v_it_ == g_.end()) 
+          return;
+        e_it_++;
+        Skip();
     }
 
-    bool equal(ConstEdgeIterator &other) const {
-        return (graph_ == other.graph_ &&
-                cvertex_ == other.cvertex_ &&
-                cedge_ == other.cedge_);
+    bool equal(const GraphEdgeIterator &other) const {
+    	if (other.v_it_ != v_it_)
+    		return false;
+        if (v_it_ != g_.end() && other.e_it_ != e_it_)
+        	return false;
+        return true;
     }
 
-    typename Graph::EdgeId const dereference() const {
-        return *cedge_;
+    EdgeId dereference() const {
+        //VERIFY(v_it_ != g_.end());
+        return *e_it_;
     }
 
-    const Graph &graph_;
-    typename Graph::VertexIt cvertex_, evertex_;
-    typename Graph::edge_const_iterator cedge_, eedge_;
+    const Graph& g_;
+    const_vertex_iterator v_it_;
+    const_edge_iterator e_it_;
 };
+
+template<class Graph>
+class ConstEdgeIterator {
+    typedef typename Graph::EdgeId EdgeId;
+    GraphEdgeIterator<Graph> begin_, end_;
+
+  public:
+    ConstEdgeIterator(const Graph &g)
+            : begin_(g, g.begin()), end_(g, g.end()) {
+    }
+
+    bool IsEnd() const {
+        return begin_ == end_;
+    }
+
+    EdgeId operator*() const {
+        return *begin_;
+    }
+
+    const ConstEdgeIterator& operator++() {
+        begin_++;
+        return *this;
+    }
+};
+
+//template<class Graph>
+//class ConstEdgeIterator :
+//        public boost::iterator_facade<ConstEdgeIterator<Graph>,
+//                                      typename Graph::EdgeId const,
+//                                      boost::forward_traversal_tag,
+//                                      typename Graph::EdgeId const> {
+//  public:
+//    ConstEdgeIterator(const Graph &g)
+//            : graph_(g),
+//              cvertex_(g.begin()), evertex_(g.end()),
+//              cedge_(g.out_begin(*cvertex_)), eedge_(g.out_end(*cvertex_)) {
+//        skip_empty();
+//    }
+//
+//    bool IsEnd() const {
+//        return cvertex_ == evertex_;
+//    }
+//
+//  private:
+//    friend class boost::iterator_core_access;
+//
+//    void skip_empty() {
+//        while (cedge_ == eedge_) {
+//            if (++cvertex_ == evertex_)
+//                break;
+//            cedge_ = graph_.out_begin(*cvertex_);
+//            eedge_ = graph_.out_end(*cvertex_);
+//        }
+//    }
+//
+//    void increment() {
+//        ++cedge_;
+//        skip_empty();
+//    }
+//
+//    bool equal(ConstEdgeIterator &other) const {
+//        return (graph_ == other.graph_ &&
+//                cvertex_ == other.cvertex_ &&
+//                cedge_ == other.cedge_);
+//    }
+//
+//    typename Graph::EdgeId const dereference() const {
+//        return *cedge_;
+//    }
+//
+//    const Graph &graph_;
+//    typename Graph::VertexIt cvertex_, evertex_;
+//    typename Graph::edge_const_iterator cedge_, eedge_;
+//};
 
 template<class Graph>
 class ParallelEdgeProcessor {
@@ -261,7 +352,8 @@ class ParallelEdgeProcessor {
         bool eof() const { return it_.IsEnd(); }
 
         ConstEdgeIteratorWrapper& operator>>(typename Graph::EdgeId &val) {
-            val = *(it_++);
+            val = *it_;
+            ++it_; 
             return *this;
         }
 
@@ -282,6 +374,58 @@ class ParallelEdgeProcessor {
   private:
     hammer::ReadProcessor rp_;
     ConstEdgeIteratorWrapper it_;
+};
+
+
+template<class Graph>
+class ParallelIterationHelper {
+    typedef typename Graph::EdgeId EdgeId;
+    typedef typename Graph::VertexId VertexId;
+    typedef typename Graph::VertexIt const_vertex_iterator;
+
+    const Graph& g_;
+public:
+
+    ParallelIterationHelper(const Graph& g)
+            : g_(g) {
+
+    }
+
+    std::vector<const_vertex_iterator> VertexChunks(size_t chunk_cnt) const {
+        VERIFY(chunk_cnt > 0);
+        //trying to split vertices into equal chunks, leftovers put into first chunk
+        vector<const_vertex_iterator> answer;
+        size_t vertex_cnt = g_.size();
+        size_t chunk_size = vertex_cnt / chunk_cnt;
+        auto it = g_.begin();
+        answer.push_back(it);
+        for (size_t i = 0; i + chunk_cnt * chunk_size < vertex_cnt; ++i) {
+            it++;
+        }
+        if (chunk_size > 0) {
+            size_t i = 0;
+            do {
+                ++it;
+                if (++i % chunk_size == 0)
+                    answer.push_back(it);
+            } while (it != g_.end());
+
+            VERIFY(i == chunk_cnt * chunk_size);
+        } else {
+            VERIFY(it == g_.end());
+            answer.push_back(it);
+        }
+        VERIFY(answer.back() == g_.end());
+        return answer;
+    }
+
+    std::vector<omnigraph::GraphEdgeIterator<Graph>> EdgeChunks(size_t chunk_cnt) const {
+        vector<omnigraph::GraphEdgeIterator<Graph>> answer;
+        for (const_vertex_iterator v_it : VertexChunks(chunk_cnt)) {
+            answer.push_back(omnigraph::GraphEdgeIterator<Graph>(g_, v_it));
+        }
+        return answer;
+    }
 };
 
 }

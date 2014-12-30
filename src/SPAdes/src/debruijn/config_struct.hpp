@@ -220,12 +220,12 @@ struct debruijn_config {
         };
 
         struct bulge_remover {
-        	bool   enabled;
+            bool enabled;
             double max_bulge_length_coefficient;
             size_t max_additive_length_coefficient;
             double max_coverage;
             double max_relative_coverage;
-            double max_delta;
+            size_t max_delta;
             double max_relative_delta;
         };
 
@@ -272,8 +272,6 @@ struct debruijn_config {
 
         struct complex_bulge_remover {
             bool enabled;
-            bool pics_enabled;
-            std::string folder;
             double max_relative_length;
             size_t max_length_difference;
         };
@@ -295,6 +293,14 @@ struct debruijn_config {
             size_t vertex_count_limit;
         };
 
+        struct presimplification {
+            bool enabled;
+            bool parallel;
+            isolated_edges_remover ier;
+            std::string tip_condition;
+            std::string ec_condition;
+        };
+
         bool topology_simplif_enabled;
         tip_clipper tc;
         topology_tip_clipper ttc;
@@ -308,7 +314,13 @@ struct debruijn_config {
         isolated_edges_remover ier;
         complex_bulge_remover cbr;
         hidden_ec_remover her;
-//        bool stats_mode;
+        //bool stats_mode;
+
+        bool fast_features;
+        double fast_activation_cov;
+        presimplification presimp;
+        bool persistent_cycle_iterators;
+        bool disable_br_in_cycle;
     };
 
     struct construction {
@@ -374,6 +386,7 @@ struct debruijn_config {
 
     struct DataSetData {
         size_t read_length;
+        double avg_read_length;
         double mean_insert_size;
         double insert_size_deviation;
         double insert_size_left_quantile;
@@ -390,7 +403,7 @@ struct debruijn_config {
         std::string single_read_prefix;
         size_t thread_num;
 
-        DataSetData(): read_length(0),
+        DataSetData(): read_length(0), avg_read_length(0.0),
                 mean_insert_size(0.0),
                 insert_size_deviation(0.0),
                 insert_size_left_quantile(0.0),
@@ -408,10 +421,19 @@ struct debruijn_config {
 
         size_t max_read_length;
         double average_coverage;
+        double average_read_length;
 
         size_t RL() const { return max_read_length; }
         void set_RL(size_t RL) {
             max_read_length = RL;
+        }
+
+        double aRL() const { return average_read_length; }
+        void set_aRL(double aRL) {
+            average_read_length = aRL;
+            for (size_t i = 0; i < reads.lib_count(); ++i) {
+                reads[i].data().avg_read_length = aRL;
+            }
         }
 
         double avg_coverage() const { return average_coverage; }
@@ -471,6 +493,8 @@ struct debruijn_config {
     struct kmer_coverage_model {
         double probability_threshold;
         double strong_probability_threshold;
+        double coverage_threshold;
+        bool use_coverage_threshold;
     };
 
     typedef std::map<info_printer_pos, info_printer> info_printers_t;
@@ -495,18 +519,6 @@ struct debruijn_config {
     bool use_unipaths;
     std::string additional_contigs;
 
-    bool coverage_based_rr_on;
-    struct coverage_based_rr {
-        double coverage_threshold_one_list;
-        double coverage_threshold_match;
-        double coverage_threshold_global;
-        double tandem_ratio_lower_threshold;
-        double tandem_ratio_upper_threshold;
-        double repeat_length_upper_threshold;
-    };
-
-    coverage_based_rr cbrr;
-
     std::string load_from;
 
     std::string entry_point;
@@ -514,7 +526,6 @@ struct debruijn_config {
     bool rr_enable;
     single_read_resolving_mode single_reads_rr;
     bool use_single_reads;
-    bool divide_clusters;
 
     bool mismatch_careful;
     bool correct_mismatches;
@@ -537,7 +548,6 @@ struct debruijn_config {
 
     bool main_iteration;
 
-    bool use_multithreading;
     size_t max_threads;
     size_t max_memory;
 
@@ -554,7 +564,6 @@ struct debruijn_config {
     ambiguous_distance_estimator amb_de;
     pacbio_processor pb;
     bool use_scaffolder;
-    bool mask_all;
     dataset ds;
     position_handler pos;
     gap_closer gc;
@@ -565,6 +574,7 @@ struct debruijn_config {
     size_t flanking_range;
 
     bool diploid_mode;
+    bool need_mapping;
 };
 
 void load(debruijn_config& cfg, const std::string &filename);

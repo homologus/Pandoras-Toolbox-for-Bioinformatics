@@ -20,6 +20,8 @@
  *
  */
 
+#include <unistd.h>
+
 
 #include "stdinc.h"
 #include "build_preArc.h"

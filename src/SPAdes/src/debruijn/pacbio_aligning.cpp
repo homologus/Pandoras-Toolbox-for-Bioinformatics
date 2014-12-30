@@ -72,7 +72,9 @@ void align_pacbio(conj_graph_pack &gp, int lib_id) {
     PathStorage<Graph>& long_reads = gp.single_long_reads[lib_id];
     pacbio::StatsCounter stats;
     size_t min_gap_quantity = 2;
-    if (cfg::get().ds.reads[lib_id].type() == io::LibraryType::PacBioReads || cfg::get().ds.reads[lib_id].type() == io::LibraryType::SangerReads) {
+    if (cfg::get().ds.reads[lib_id].type() == io::LibraryType::PacBioReads || 
+            cfg::get().ds.reads[lib_id].type() == io::LibraryType::SangerReads || 
+            cfg::get().ds.reads[lib_id].type() == io::LibraryType::NanoporeReads) {
         min_gap_quantity = cfg::get().pb.pacbio_min_gap_quantity;
     } else {
         min_gap_quantity = cfg::get().pb.contigs_min_gap_quantity;
@@ -118,11 +120,6 @@ void align_pacbio(conj_graph_pack &gp, int lib_id) {
     }
 
     gap_closer.DumpToFile(cfg::get().output_saves + "gaps_pb_closed.fasta");
-    INFO("Index refill");
-    gp.index.Refill();
-    INFO("Index refill after PacBio finished");
-    if (!gp.index.IsAttached())
-        gp.index.Attach();
     INFO("PacBio test finished");
     return;
 }
@@ -135,6 +132,7 @@ void PacBioAligning::run(conj_graph_pack &gp, const char*) {
         io::LibraryType type = cfg::get().ds.reads[i].type();
         if (type == io::LibraryType::PacBioReads ||
                 type == io::LibraryType::SangerReads ||
+                type == io::LibraryType::NanoporeReads ||
                 type == io::LibraryType::TrustedContigs ||
                 type == io::LibraryType::UntrustedContigs) {
             lib_id = (int) i;

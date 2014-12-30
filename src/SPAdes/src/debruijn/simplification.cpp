@@ -13,32 +13,16 @@
 #include "simplification.hpp"
 
 namespace debruijn_graph {
-void CollectPositions(conj_graph_pack &gp) {
-    gp.edge_pos.clear();
-    if (gp.genome.size() > 0) {
-        FillPos(gp, gp.genome, "ref0");
-        FillPos(gp, !gp.genome, "ref1");
-    }
-
-    if (!cfg::get().pos.contigs_for_threading.empty() &&
-        path::FileExists(cfg::get().pos.contigs_for_threading))
-      FillPosWithRC(gp, cfg::get().pos.contigs_for_threading, "thr_");
-
-    if (!cfg::get().pos.contigs_to_analyze.empty() &&
-        path::FileExists(cfg::get().pos.contigs_to_analyze))
-      FillPosWithRC(gp, cfg::get().pos.contigs_to_analyze, "anlz_");
-}
 
 void Simplification::run(conj_graph_pack &gp, const char*) {
     using namespace omnigraph;
-    if (cfg::get().developer_mode) {
-        CollectPositions(gp);
-        gp.ClearQuality();
-        gp.FillQuality();
-    }
+
+    //no other handlers here, todo change with DetachAll
+    gp.index.Detach();
+    gp.index.clear();
 
     omnigraph::DefaultLabeler<Graph> labeler(gp.g, gp.edge_pos);
-
+    
     stats::detail_info_printer printer(gp, labeler, cfg::get().output_dir);
 
     //  QualityLoggingRemovalHandler<Graph> qual_removal_handler(gp.g, edge_qual);
@@ -51,10 +35,8 @@ void Simplification::run(conj_graph_pack &gp, const char*) {
 //            //            &QualityLoggingRemovalHandler<Graph>::HandleDelete,
 //            &QualityEdgeLocalityPrintingRH<Graph>::HandleDelete,
 //            boost::ref(qual_removal_handler), _1);
-
-    SimplifyGraph(gp, 0/*removal_handler_f*/,
-                  labeler, printer, /*iteration count*/10
-                  /*, etalon_paired_index*/);
+    debruijn::simplification::SimplifyGraph(gp, 0/*removal_handler_f*/,
+                  printer, /*iteration count*/10);
 
 
     AvgCovereageCounter<Graph> cov_counter(gp.g);
@@ -67,39 +49,19 @@ void SimplificationCleanup::run(conj_graph_pack &gp, const char*) {
 
     printer(ipp_removing_isolated_edges);
 
-    {
-        INFO("Final isolated edges removal:");
-        size_t max_length = std::max(cfg::get().ds.RL(), cfg::get().simp.ier.max_length_any_cov);
-        INFO("All edges of length smaller than " << max_length << " will be removed");
-        size_t removed = IsolatedEdgeRemover<Graph>(gp.g, cfg::get().simp.ier.max_length,
-                                                    cfg::get().simp.ier.max_coverage,
-                                                    max_length).RemoveIsolatedEdges();
-        INFO("Removed " << removed << " edges");
-    }
+    debruijn::simplification::RemoveIsolatedEdges(gp.g, cfg::get().simp.ier, cfg::get().ds.RL(), boost::function<void(EdgeId)>(0), cfg::get().max_threads);
 
-    size_t low_threshold = gp.ginfo.trusted_bound();
-    if (low_threshold) {
-      EdgeRemover<Graph> remover(gp.g);
-      INFO("Removing all the edges having coverage " << low_threshold << " and less");
-      size_t cnt = 0;
-      for (auto it = gp.g.SmartEdgeBegin(); !it.IsEnd(); ++it)
-        if (math::le(gp.g.coverage(*it), (double)low_threshold)) {
-          remover.DeleteEdge(*it);
-          cnt += 1;
-        }
-      INFO("Deleted " << cnt << " edges");
+    double low_threshold = gp.ginfo.trusted_bound();
+    if (math::ge(low_threshold, 0.0)) {
+        INFO("Removing all the edges having coverage " << low_threshold << " and less");
+        omnigraph::EdgeRemovingAlgorithm<Graph> removing_algo(gp.g,
+                                                              std::make_shared<func::AlwaysTrue<EdgeId>>(), 0);
+
+        removing_algo.Process(CoverageComparator<Graph>(gp.g),
+                              std::make_shared<CoverageUpperBound<Graph>>(gp.g, low_threshold));
     }
 
     printer(ipp_final_simplified);
-
-    // FIXME: Get rid of this
-    if (cfg::get().correct_mismatches || cfg::get().rr_enable) {
-        INFO("Final index refill");
-        gp.index.Refill();
-        INFO("Final index refill finished");
-        if (!gp.index.IsAttached())
-            gp.index.Attach();
-    }
 
     DEBUG("Graph simplification finished");
 
@@ -150,44 +112,6 @@ void corrected_and_save_reads(const conj_graph_pack& gp) {
     }
 
     INFO("Error correction done");
-}
-
-void correct_mismatches(conj_graph_pack &gp) {
-    INFO("Correcting mismatches");
-    auto_ptr<io::IReader<io::SingleReadSeq>> stream = single_binary_multireader(true, true);
-    size_t corrected = MismatchShallNotPass<conj_graph_pack, io::SingleReadSeq>(gp, 2).StopAllMismatches(*stream, 1);
-    INFO("Corrected " << corrected << " nucleotides");
-}
-
-void parallel_correct_mismatches(conj_graph_pack &gp) {
-    INFO("Correcting mismatches");
-    auto streams = single_binary_readers(true,  true);
-    size_t corrected = MismatchShallNotPass<conj_graph_pack, io::SingleReadSeq>(gp, 2).ParallelStopAllMismatches(*streams, 1);
-    INFO("Corrected " << corrected << " nucleotides");
-}
-
-void exec_simplification(conj_graph_pack& gp) {
-    simplify_graph(gp);
-
-    if (cfg::get().correct_mismatches)
-    {
-        parallel_correct_mismatches(gp);
-        }
-    save_simplification(gp);
-    if (cfg::get().graph_read_corr.enable) {
-        //			corrected_and_save_reads(gp);
-    }
-
-    } else {
-        INFO("Loading Simplification");
-
-        path::files_t used_files;
-        load_simplification(gp, &used_files);
-        link_files_by_prefix(used_files, cfg::get().output_saves);
-        //		if (cfg::get().correct_mismatches) {
-        //			parallel_correct_mismatches(gp);
-        //		}
-    }
 }
 #endif
 

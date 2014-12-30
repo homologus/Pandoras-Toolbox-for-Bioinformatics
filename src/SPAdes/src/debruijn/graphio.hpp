@@ -9,7 +9,6 @@
 #include "standard.hpp"
 #include "omni/omni_utils.hpp"
 #include "omni/abstract_conjugate_graph.hpp"
-#include "omni/abstract_nonconjugate_graph.hpp"
 
 #include "omni/omni_tools.hpp"
 
@@ -220,8 +219,9 @@ class DataPrinter {
         SaveEdgeAssociatedInfo(flanking_cov, out);
     }
 
+    template<class Index>
     void SavePaired(const string& file_name,
-                    PairedInfoIndexT<Graph> const& paired_index) const {
+                    Index const& paired_index) const {
         FILE* file = fopen((file_name + ".prd").c_str(), "w");
         DEBUG("Saving paired info, " << file_name <<" created");
         VERIFY(file != NULL);
@@ -232,7 +232,7 @@ class DataPrinter {
             const auto& inner_map = paired_index.GetEdgeInfo(e1, 0);
             for (auto II = inner_map.begin(), IE = inner_map.end(); II != IE; ++II) {
                 EdgeId e2 = II->first;
-                const de::Histogram& hist = II->second;
+                const auto& hist = II->second;
                 if (component_.contains(e2)) { // if the second edge also lies in the same component
                     comp_size += hist.size();
                 }
@@ -244,17 +244,13 @@ class DataPrinter {
         for (auto I = component_.e_begin(), E = component_.e_end(); I != E; ++I) {
             EdgeId e1 = *I;
             const auto& inner_map = paired_index.GetEdgeInfo(e1, 0);
-            for (auto II = inner_map.begin(), IE = inner_map.end(); II != IE; ++II) {
-                EdgeId e2 = II->first;
-                const Histogram& hist = II->second;
+            std::map<typename Graph::EdgeId, typename Index::Histogram> ordermap(inner_map.begin(), inner_map.end());
+            for (const auto& entry : ordermap) {
+                EdgeId e2 = entry.first; const auto& hist = entry.second;
                 if (component_.contains(e2))
-                    for (auto hist_it = hist.begin(); hist_it != hist.end(); ++hist_it) {
-                        Point point = *hist_it;
-                        fprintf(file, "%zu %zu %.2f %.2f %.2f .\n",
-                                e1.int_id(),
-                                e2.int_id(),
-                                point.d, point.weight, point.var);
-                    }
+                  for (Point point : hist)
+                    fprintf(file, "%zu %zu %.2f %.2f %.2f .\n",
+                            e1.int_id(), e2.int_id(), (double)point.d, (double)point.weight, (double)point.variation());
             }
         }
 
@@ -354,46 +350,6 @@ class ConjugateDataPrinter: public DataPrinter<Graph> {
 };
 
 template<class Graph>
-class NonconjugateDataPrinter: public DataPrinter<Graph> {
-    typedef DataPrinter<Graph> base;
-    typedef typename Graph::EdgeId EdgeId;
-    typedef typename Graph::VertexId VertexId;
-  public:
-    NonconjugateDataPrinter(Graph const& g) :
-            base(g) {
-    }
-
-    NonconjugateDataPrinter(const GraphComponent<Graph>& graph_component) :
-            base(graph_component) {
-    }
-
-    template<class VertexIt>
-    NonconjugateDataPrinter(const Graph& g, VertexIt begin, VertexIt end) :
-            base(GraphComponent<Graph>(g, begin, end)) {
-    }
-
-    std::string ToPrint(VertexId v) const {
-        stringstream ss;
-        ss << "Vertex " << v.int_id() << " .";
-        return ss.str();
-    }
-
-    std::string ToPrint(EdgeId e) const {
-        stringstream ss;
-        ss
-                << "Edge "
-                << e.int_id()
-                << " : "
-                << this->component().g().EdgeStart(e).int_id()
-                << " -> "
-                << this->component().g().EdgeEnd(e).int_id()
-                << ", l = "
-                << this->component().g().length(e) << " .";
-        return ss.str();
-    }
-};
-
-template<class Graph>
 struct PrinterTraits {
     typedef DataPrinter<Graph> Printer;
 };
@@ -401,11 +357,6 @@ struct PrinterTraits {
 template<>
 struct PrinterTraits<ConjugateDeBruijnGraph> {
     typedef ConjugateDataPrinter<ConjugateDeBruijnGraph> Printer;
-};
-
-template<>
-struct PrinterTraits<NonconjugateDeBruijnGraph> {
-    typedef NonconjugateDataPrinter<NonconjugateDeBruijnGraph> Printer;
 };
 
 template<class Graph>
@@ -501,16 +452,57 @@ class DataScanner {
             if (e1 == EdgeId(NULL) || e2 == EdgeId(NULL))
                 continue;
             TRACE(e1 << " " << e2 << " " << d << " " << w);
-            paired_index.AddPairInfo(e1, e2, d, w, v, false);
+            paired_index.AddPairInfo(e1, e2, { d, w, v }, false);
         }
         DEBUG("PII SIZE " << paired_index.size());
         fclose(file);
     }
 
-    void LoadPositions(const string& file_name,
+      void LoadPaired(const string& file_name,
+                      UnclusteredPairedInfoIndexT<Graph>& paired_index,
+                      bool force_exists = true) {
+        typedef typename Graph::EdgeId EdgeId;
+        FILE* file = fopen((file_name + ".prd").c_str(), "r");
+        INFO((file_name + ".prd"));
+        if (force_exists) {
+            VERIFY(file != NULL);
+        } else if (file == NULL) {
+            INFO("Paired info not found, skipping");
+            return;
+        }
+        INFO("Reading paired info from " << file_name << " started");
+
+        size_t paired_count;
+        int read_count = fscanf(file, "%zu \n", &paired_count);
+        VERIFY(read_count == 1);
+        for (size_t i = 0; i < paired_count; i++) {
+            size_t first_real_id, second_real_id;
+            double w, d, v;
+            read_count = fscanf(file, "%zu %zu %lf %lf %lf .\n",
+                                &first_real_id, &second_real_id, &d, &w, &v);
+            VERIFY(read_count == 5);
+            TRACE(first_real_id<< " " << second_real_id << " " << d << " " << w);
+            VERIFY(this->edge_id_map().find(first_real_id) != this->edge_id_map().end())
+            EdgeId e1 = this->edge_id_map()[first_real_id];
+            EdgeId e2 = this->edge_id_map()[second_real_id];
+            if (e1 == EdgeId(NULL) || e2 == EdgeId(NULL))
+                continue;
+            TRACE(e1 << " " << e2 << " " << d << " " << w);
+            paired_index.AddPairInfo(e1, e2, { d, w }, false);
+        }
+        DEBUG("PII SIZE " << paired_index.size());
+        fclose(file);
+    }
+
+    bool LoadPositions(const string& file_name,
                        EdgesPositionHandler<Graph>& edge_pos) {
         FILE* file = fopen((file_name + ".pos").c_str(), "r");
-        VERIFY(file != NULL);
+        if (file == NULL) {
+            INFO("No positions were saved");
+            return false;
+        }
+        VERIFY(!edge_pos.IsAttached());
+        edge_pos.Attach();
         INFO("Reading edges positions, " << file_name <<" started");
         VERIFY(file != NULL);
         size_t pos_count;
@@ -540,6 +532,7 @@ class DataScanner {
             }
         }
         fclose(file);
+        return true;
     }
 
   private:
@@ -681,79 +674,6 @@ private:
 };
 
 template<class Graph>
-class NonconjugateDataScanner: public DataScanner<Graph> {
-    typedef DataScanner<Graph> base;
-    typedef typename Graph::EdgeId EdgeId;
-    typedef typename Graph::VertexId VertexId;
-  public:
-    /*virtual*/
-    void LoadGraph(const string& file_name) {
-        int flag;
-        FILE* file = fopen((file_name + ".grp").c_str(), "r");
-        VERIFY_MSG(file != NULL, "Couldn't find file " << (file_name + ".grp"));
-
-        FILE* sequence_file = fopen((file_name + ".sqn").c_str(), "r");
-        VERIFY_MSG(sequence_file != NULL, "Couldn't find file " << (file_name + ".sqn"));
-
-        INFO(
-            "Reading NON conjugate de bruujn graph from " << file_name << " started");
-        size_t vertex_count;
-        size_t edge_count;
-        flag = fscanf(file, "%ld %ld \n", &vertex_count, &edge_count);
-        VERIFY(flag == 2);
-        for (size_t i = 0; i < vertex_count; i++) {
-            size_t vertex_real_id;
-            flag = fscanf(file, "Vertex %ld", &vertex_real_id);
-            VERIFY(flag == 1);
-            char c = 'a';
-            while (c != '.') {
-                flag = fscanf(file, "%c", &c);
-                VERIFY(flag == 1);
-            }
-            flag = fscanf(file, "\n");
-            VERIFY(flag == 0);
-            VertexId vid = this->g().AddVertex();
-            this->vertex_id_map()[vertex_real_id] = vid;
-            TRACE(vid);
-        }
-        size_t tmp_edge_count;
-        flag = fscanf(sequence_file, "%ld", &tmp_edge_count);
-        VERIFY(flag == 1);
-        VERIFY(edge_count == tmp_edge_count);
-        char longstring[1000500];
-        for (size_t i = 0; i < edge_count; i++) {
-            int e_real_id, start_id, fin_id, length;
-            flag = fscanf(file, "Edge %d : %d -> %d, l = %d", &e_real_id,
-                          &start_id, &fin_id, &length);
-            VERIFY(flag == 4);
-            flag = fscanf(sequence_file, "%d %s .", &e_real_id, longstring);
-            VERIFY(flag == 2);
-            //does'nt matter, whether it was conjugate or not.
-            char c = 'a';
-            while (c != '.') {
-                flag = fscanf(file, "%c", &c);
-                VERIFY(flag == 1);
-            }
-            flag = fscanf(file, "\n");
-            VERIFY(flag == 0);
-            Sequence tmp(longstring);
-            VERIFY(this->vertex_id_map().find(start_id) != this->vertex_id_map().end());
-            VERIFY(this->vertex_id_map().find(fin_id) != this->vertex_id_map().end());
-            EdgeId eid = this->g().AddEdge(
-                this->vertex_id_map()[start_id],
-                this->vertex_id_map()[fin_id], tmp);
-            this->edge_id_map()[e_real_id] = eid;
-        }
-        fclose(file);
-        fclose(sequence_file);
-    }
-
-    NonconjugateDataScanner(Graph &g) :
-            base(g) {
-    }
-};
-
-template<class Graph>
 struct ScannerTraits {
     typedef DataScanner<Graph> Scanner;
 };
@@ -761,11 +681,6 @@ struct ScannerTraits {
 template<>
 struct ScannerTraits<ConjugateDeBruijnGraph> {
     typedef ConjugateDataScanner<ConjugateDeBruijnGraph> Scanner;
-};
-
-template<>
-struct ScannerTraits<NonconjugateDeBruijnGraph> {
-    typedef NonconjugateDataScanner<NonconjugateDeBruijnGraph> Scanner;
 };
 
 inline std::string MakeSingleReadsFileName(const std::string& file_name,
@@ -812,6 +727,12 @@ void PrintPairedIndex(const string& file_name, DataPrinter<Graph>& printer,
 }
 
 template<class Graph>
+void PrintUnclusteredIndex(const string& file_name, DataPrinter<Graph>& printer,
+                           const UnclusteredPairedInfoIndexT<Graph>& paired_index) {
+    printer.SavePaired(file_name, paired_index);
+}
+
+template<class Graph>
 void PrintClusteredIndex(const string& file_name, DataPrinter<Graph>& printer,
                          const PairedInfoIndexT<Graph>& clustered_index) {
     PrintPairedIndex(file_name + "_cl", printer, clustered_index);
@@ -826,23 +747,21 @@ void PrintScaffoldingIndex(const string& file_name, DataPrinter<Graph>& printer,
 template<class Graph>
 void PrintScaffoldIndex(const string& file_name, DataPrinter<Graph>& printer,
     const PairedInfoIndexT<Graph>& scaffold_index) {
-  PrintPairedIndex(file_name + "_scf", printer, scaffold_index);
+    PrintPairedIndex(file_name + "_scf", printer, scaffold_index);
 }
 
 template<class Graph>
-void PrintPairedIndices(const string& file_name, DataPrinter<Graph>& printer,
-                        const PairedInfoIndicesT<Graph>& paired_indices) {
-    for (size_t i = 0; i < paired_indices.size(); ++i) {
-        PrintPairedIndex(file_name + "_" + ToString(i), printer, paired_indices[i]);
-    }
+void PrintUnclusteredIndices(const string& file_name, DataPrinter<Graph>& printer,
+                             const UnclusteredPairedInfoIndicesT<Graph>& paired_indices) {
+    for (size_t i = 0; i < paired_indices.size(); ++i)
+        PrintUnclusteredIndex(file_name + "_" + ToString(i), printer, paired_indices[i]);
 }
 
 template<class Graph>
 void PrintClusteredIndices(const string& file_name, DataPrinter<Graph>& printer,
                            const PairedInfoIndicesT<Graph>& paired_indices) {
-    for (size_t i = 0; i < paired_indices.size(); ++i) {
+    for (size_t i = 0; i < paired_indices.size(); ++i)
         PrintClusteredIndex(file_name  + "_" + ToString(i), printer, paired_indices[i]);
-    }
 }
 
 template<class Graph>
@@ -881,7 +800,6 @@ void PrintWithPairedIndices(const string& file_name,
                             const graph_pack& gp,
                             const PairedInfoIndicesT<typename graph_pack::graph_t>& paired_indices,
                             bool clustered_index = false) {
-
     PrintGraphPack(file_name, printer, gp);
     if (!clustered_index)
         PrintPairedIndices(file_name, printer, paired_indices);
@@ -908,7 +826,7 @@ template<class graph_pack>
 void PrintAll(const string& file_name, const graph_pack& gp) {
     typename PrinterTraits<typename graph_pack::graph_t>::Printer printer(gp.g, gp.g.begin(), gp.g.end());
     PrintGraphPack(file_name, printer, gp);
-    PrintPairedIndices(file_name, printer, gp.paired_indices);
+    PrintUnclusteredIndices(file_name, printer, gp.paired_indices);
     PrintClusteredIndices(file_name, printer, gp.clustered_indices);
     PrintScaffoldingIndices(file_name, printer, gp.scaffolding_indices);
     PrintSingleLongReads(file_name, gp.single_long_reads);
@@ -982,18 +900,19 @@ void ScanBasicGraph(const string& file_name, DataScanner<Graph>& scanner) {
 template<class graph_pack>
 void ScanGraphPack(const string& file_name,
                    DataScanner<typename graph_pack::graph_t>& scanner, graph_pack& gp) {
-    gp.index.Detach();
     ScanBasicGraph(file_name, scanner);
+    gp.index.Attach();
     if (LoadEdgeIndex(file_name, gp.index.inner_index())) {
         gp.index.Update();
     } else {
         WARN("Cannot load edge index, kmer coverages will be missed");
         gp.index.Refill();
     }
-    gp.index.Attach();
     //  scanner.LoadPaired(file_name + "_et", gp.etalon_paired_index);
     scanner.LoadPositions(file_name, gp.edge_pos);
-    LoadKmerMapper(file_name, gp.kmer_mapper);
+    //load kmer_mapper only if needed
+    if (gp.kmer_mapper.IsAttached())
+        LoadKmerMapper(file_name, gp.kmer_mapper);
     if (!scanner.LoadFlankingCoverage(file_name, gp.flanking_cov)) {
         gp.flanking_cov.Fill(gp.index.inner_index());
     }
@@ -1001,7 +920,7 @@ void ScanGraphPack(const string& file_name,
 
 template<class Graph>
 void ScanPairedIndex(const string& file_name, DataScanner<Graph>& scanner,
-                     PairedInfoIndexT<Graph>& paired_index,
+                     UnclusteredPairedInfoIndexT<Graph>& paired_index,
                      bool force_exists = true) {
     scanner.LoadPaired(file_name, paired_index, force_exists);
 }
@@ -1022,7 +941,7 @@ void ScanScaffoldingIndex(const string& file_name, DataScanner<Graph>& scanner,
 
 template<class Graph>
 void ScanPairedIndices(const std::string& file_name, DataScanner<Graph>& scanner,
-                       PairedInfoIndicesT<Graph>& paired_indices,
+                       UnclusteredPairedInfoIndicesT<Graph>& paired_indices,
                        bool force_exists = true) {
     for (size_t i = 0; i < paired_indices.size(); ++i)
         ScanPairedIndex(file_name  + "_" + ToString(i), scanner, paired_indices[i], force_exists);

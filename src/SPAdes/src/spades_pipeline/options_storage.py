@@ -23,9 +23,9 @@ ALLOWED_READS_EXTENSIONS += [x + '.gz' for x in ALLOWED_READS_EXTENSIONS]
 # we support up to MAX_LIBS_NUMBER libs for each type of short-reads libs
 MAX_LIBS_NUMBER = 5
 OLD_STYLE_READS_OPTIONS = ["--12", "-1", "-2", "-s"]
-SHORT_READS_TYPES = {"pe": "paired-end", "s": "single", "mp": "mate-pairs", "hqmp": "hq-mate-pairs"}
+SHORT_READS_TYPES = {"pe": "paired-end", "s": "single", "mp": "mate-pairs", "hqmp": "hq-mate-pairs", "nxmate": "nxmate"}
 # other libs types:
-LONG_READS_TYPES = ["pacbio", "sanger", "trusted-contigs", "untrusted-contigs"]
+LONG_READS_TYPES = ["pacbio", "sanger", "nanopore", "trusted-contigs", "untrusted-contigs"]
 
 #other constants
 MIN_K = 1
@@ -65,11 +65,13 @@ threads = None
 memory = None
 tmp_dir = None
 k_mers = None
-qvoffset = None # auto-detect by default
+qvoffset = None  # auto-detect by default
+cov_cutoff = 'off'  # default is 'off'
 
 # hidden options
 mismatch_corrector = None
 reference = None
+configs_dir = None
 iterations = None
 bh_heap_check = None
 spades_heap_check = None
@@ -88,8 +90,10 @@ restart_tmp_dir = None
 restart_k_mers = None
 original_k_mers = None
 restart_qvoffset = None
+restart_cov_cutoff = None
 restart_developer_mode = None
 restart_reference = None
+restart_configs_dir = None
 restart_read_buffer_size = None
 
 dict_of_prefixes = dict()
@@ -101,16 +105,18 @@ long_options = "12= threads= memory= tmp-dir= iterations= phred-offset= sc ionto
                "help test debug debug:false reference= config-file= dataset= "\
                "bh-heap-check= spades-heap-check= read-buffer-size= help-hidden "\
                "mismatch-correction mismatch-correction:false careful careful:false "\
-               "continue restart-from= diploid".split()
+               "continue restart-from= diploid cov-cutoff= configs-dir=".split()
 short_options = "o:1:2:s:k:t:m:i:h"
 
 # adding multiple paired-end, mate-pair and other (long reads) libraries support
 reads_options = []
 for i in range(MAX_LIBS_NUMBER):
     for type in SHORT_READS_TYPES.keys():
-        if type == 's': # single
+        if type == 's':  # single
             reads_options += ["s%d=" % (i+1)]
-        else: # paired-end, mate-pairs, hq-mate-pairs
+        elif type == 'nxmate':  # special case: only left and right reads
+            reads_options += ("%s%d-1= %s%d-2=" % tuple([type, i + 1] * 2)).split()
+        else:  # paired-end, mate-pairs, hq-mate-pairs
             reads_options += ("%s%d-1= %s%d-2= %s%d-12= %s%d-s= %s%d-rf %s%d-fr %s%d-ff" % tuple([type, i + 1] * 7)).split()
 reads_options += list(map(lambda x: x + '=', LONG_READS_TYPES))
 long_options += reads_options
@@ -176,8 +182,13 @@ def usage(spades_version, show_hidden=False, dipspades=False):
                      " for high-quality mate-pair library number <#> (<#> = 1,2,3,4,5)" + "\n")
     sys.stderr.write("--hqmp<#>-<or>\torientation of reads"\
                      " for high-quality mate-pair library number <#> (<#> = 1,2,3,4,5; <or> = fr, rf, ff)" + "\n")
+    sys.stderr.write("--nxmate<#>-1\t<filename>\tfile with forward reads"\
+                         " for Lucigen NxMate library number <#> (<#> = 1,2,3,4,5)" + "\n")
+    sys.stderr.write("--nxmate<#>-2\t<filename>\tfile with reverse reads"\
+                         " for Lucigen NxMate library number <#> (<#> = 1,2,3,4,5)" + "\n")
     sys.stderr.write("--sanger\t<filename>\tfile with Sanger reads\n")
     sys.stderr.write("--pacbio\t<filename>\tfile with PacBio reads\n")
+    sys.stderr.write("--nanopore\t<filename>\tfile with Nanopore reads\n")
     sys.stderr.write("--trusted-contigs\t<filename>\tfile with trusted contigs\n")
     sys.stderr.write("--untrusted-contigs\t<filename>\tfile with untrusted contigs\n")
     if dipspades:
@@ -220,7 +231,9 @@ def usage(spades_version, show_hidden=False, dipspades=False):
     sys.stderr.write("\t\t\t\t[default: <output_dir>/tmp]" + "\n")
     sys.stderr.write("-k\t\t<int,int,...>\tcomma-separated list of k-mer sizes"\
                          " (must be odd and" + "\n")
-    sys.stderr.write("\t\t\t\tless than " + str(MAX_K + 1) + ") [default: 'auto']" + "\n") # ",".join(map(str, k_mers_short))
+    sys.stderr.write("\t\t\t\tless than " + str(MAX_K + 1) + ") [default: 'auto']" + "\n")
+    sys.stderr.write("--cov-cutoff\t<float>\t\tcoverage cutoff value (a positive float number, "
+                     "or 'auto', or 'off') [default: 'off']" + "\n")
     sys.stderr.write("--phred-offset\t<33 or 64>\tPHRED quality offset in the"\
                          " input reads (33 or 64)" + "\n")
     sys.stderr.write("\t\t\t\t[default: auto-detect]" + "\n")    
@@ -233,6 +246,7 @@ def usage(spades_version, show_hidden=False, dipspades=False):
                              " of mismatches and short indels" + "\n")
         sys.stderr.write("--reference\t<filename>\tfile with reference for deep analysis"\
                              " (only in debug mode)" + "\n")
+        sys.stderr.write("--configs-dir\t<configs_dir>\tdirectory with configs" + "\n")
         sys.stderr.write("-i/--iterations\t<int>\t\tnumber of iterations for read error"\
                              " correction [default: %s]\n" % ITERATIONS)
         sys.stderr.write("--read-buffer-size\t<int>\t\tsets size of read buffer for graph construction")
@@ -259,13 +273,14 @@ def set_default_values():
     global mismatch_corrector
     global developer_mode
     global qvoffset
+    global cov_cutoff
     global tmp_dir
 
     if threads is None:
         threads = THREADS
     if memory is None:
         if support.get_available_memory():
-            memory = min(MEMORY, support.get_available_memory())
+            memory = int(min(MEMORY, support.get_available_memory()))
         else:
             memory = MEMORY
     if iterations is None:
@@ -282,6 +297,8 @@ def set_default_values():
         developer_mode = False
     if qvoffset == 'auto':
         qvoffset = None
+    if cov_cutoff is None:
+        cov_cutoff = 'off'
     if tmp_dir is None:
         tmp_dir = os.path.join(output_dir, TMP_DIR)
 
@@ -317,8 +334,10 @@ def save_restart_options(log):
     global restart_memory
     global restart_tmp_dir
     global restart_qvoffset
+    global restart_cov_cutoff
     global restart_developer_mode
     global restart_reference
+    global restart_configs_dir
     global restart_read_buffer_size
 
     restart_k_mers = k_mers
@@ -330,8 +349,10 @@ def save_restart_options(log):
     restart_memory = memory
     restart_tmp_dir = tmp_dir
     restart_qvoffset = qvoffset
+    restart_cov_cutoff = cov_cutoff
     restart_developer_mode = developer_mode
     restart_reference = reference
+    restart_configs_dir = configs_dir
     restart_read_buffer_size = read_buffer_size
 
 
@@ -345,8 +366,10 @@ def load_restart_options():
     global memory
     global tmp_dir
     global qvoffset
+    global cov_cutoff
     global developer_mode
     global reference
+    global configs_dir
     global read_buffer_size
     global original_k_mers
 
@@ -372,9 +395,13 @@ def load_restart_options():
         tmp_dir = restart_tmp_dir
     if restart_qvoffset is not None:
         qvoffset = restart_qvoffset
+    if restart_cov_cutoff is not None:
+        cov_cutoff = restart_cov_cutoff
     if restart_developer_mode is not None:
         developer_mode = restart_developer_mode
     if restart_reference is not None:
         reference = restart_reference
+    if restart_configs_dir is not None:
+        configs_dir = restart_configs_dir
     if restart_read_buffer_size is not None:
         read_buffer_size = restart_read_buffer_size

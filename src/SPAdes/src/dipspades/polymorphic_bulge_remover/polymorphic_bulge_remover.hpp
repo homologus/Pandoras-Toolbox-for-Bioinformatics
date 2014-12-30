@@ -26,7 +26,6 @@ public:
 class PolymorphicBulgeRemover {
 	conj_graph_pack 		&graph_pack_;
 	BaseHistogram<size_t> 	&bulge_len_hist_;
-	Compressor<Graph> 		compressor_;
 
 	typedef BulgeRemoverAlgorithm<DijkstraBulgePathsSearcher,
 			PolymorphicBulgeRemoverHelper::BaseBulgeGluer> LightBulgeRemover;
@@ -39,7 +38,7 @@ class PolymorphicBulgeRemover {
 		size_t num_glued_bulges = 1;
 		for(size_t num_iter = 1; num_glued_bulges > 0; num_iter++){
 			num_glued_bulges = spath_br.Run();
-			compressor_.CompressAllVertices();
+			CompressAllVertices(graph_pack_.g, false);
 			INFO(ToString(num_iter) + " iteration: " + ToString(num_glued_bulges) + " simple bulges were glued");
 		}
 		INFO("Simple polymorphic bulge remover ends");
@@ -57,7 +56,7 @@ class PolymorphicBulgeRemover {
 		size_t num_glued_bulges = 1;
 		for(size_t i = 0; (i < num_iters) && (num_glued_bulges != 0); i++){
 			num_glued_bulges = br.Run();
-			compressor_.CompressAllVertices();
+			CompressAllVertices(graph_pack_.g, false);
 			INFO(ToString(i + 1) + " iteration: " + ToString(num_glued_bulges) + " complex bulges were glued");
 		}
 		INFO(bulge_remover_name + " ends");
@@ -67,6 +66,7 @@ class PolymorphicBulgeRemover {
 		if(!dsp_cfg::get().rp.developer_mode)
 			return;
 
+        graph_pack_.EnsureDebugInfo();
 		make_dir(dsp_cfg::get().io.output_dir + "components/");
 	    omnigraph::DefaultLabeler<Graph> labeler(graph_pack_.g, graph_pack_.edge_pos);
 	    make_dir(dsp_cfg::get().io.output_dir + "components/" + component_dir + "/");
@@ -81,8 +81,7 @@ public:
 	PolymorphicBulgeRemover(conj_graph_pack &graph_pack,
 			BaseHistogram<size_t> &bulge_len_hist) :
 		graph_pack_(graph_pack),
-		bulge_len_hist_(bulge_len_hist),
-		compressor_(graph_pack_.g, false)  { }
+		bulge_len_hist_(bulge_len_hist) { }
 
 	void Run(){
 		if(!dsp_cfg::get().pbr.enabled)
@@ -98,7 +97,7 @@ public:
 
 //		INFO("Iterative tail gluing starts");
 //		IterativeTailGluing(graph_pack_.g, dsp_cfg::get().pbr.rel_bulge_align).IterativeProcessTails();
-//		compressor_.CompressAllVertices();
+//		CompressAllVertices(graph_pack_.g, false);
 //		INFO("Iterative tail gluing ends");
 
 		INFO("Index refilling");

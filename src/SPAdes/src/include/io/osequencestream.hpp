@@ -53,7 +53,7 @@ protected:
     }
 
 public:
-    osequencestream(const std::string& filename): id_(0) {
+    osequencestream(const std::string& filename): id_(1) {
         ofstream_.open(filename.c_str());
     }
 
@@ -166,7 +166,7 @@ protected:
     double cov_;
 
   virtual void write_header(const std::string& s) {
-        ofstream_ << ">" << MakeContigId(++id_, s.size(), cov_, uid_) << std::endl;
+        ofstream_ << ">" << MakeContigId(id_++, s.size(), cov_, uid_) << std::endl;
     }
 
 public:
@@ -199,6 +199,43 @@ public:
         std::string s = seq.str();
         return operator <<(s);
     }
+
+};
+
+class osequencestream_with_manual_node_id: public osequencestream_with_id {
+    bool is_id_set_;
+    virtual void write_header(const std::string& s) {
+        //for manual NODE ID setting osequencestream need to chech that node ID is really manually set
+        if (!is_id_set_) {
+            WARN ("NODE ID is not set manually, setting to 0");
+            id_ = 0;
+        }
+        ofstream_ << ">" << MakeContigId(id_, s.size(), cov_, uid_) << std::endl;
+        is_id_set_ = false;
+    }
+
+public:
+//unfortunately constructor inheritance is supported only since g++4.8
+    osequencestream_with_manual_node_id(const std::string& filename): osequencestream_with_id(filename) {
+        is_id_set_ = false;
+    }
+
+    void setNodeID(int id) {
+        id_ = id;
+        is_id_set_ = true;
+    }
+
+    osequencestream_with_manual_node_id& operator<<(const std::string& s) {
+        write_header(s);
+        write_str(s);
+        return *this;
+    }
+
+    osequencestream_with_manual_node_id& operator<<(const Sequence& seq) {
+        std::string s = seq.str();
+        return operator <<(s);
+    }
+
 
 };
 
@@ -258,10 +295,16 @@ public:
         header_=  h;
     }
 
-    osequencestream_for_fastg& operator<<(const std::vector<std::string>& v) {
+    osequencestream_for_fastg& operator<<(const std::set<std::string>& s) {
         write_header(header_);
-        for (size_t i = 0; i < v.size(); ++i) {
-            ofstream_ << ":" << v[i];
+        if (s.size() > 0) {
+            auto iter = s.begin();
+            ofstream_ << ":" << *iter;
+            ++iter;
+            while (iter != s.end()) {
+                ofstream_ << "," << *iter;
+                ++iter;
+            }
         }
         ofstream_ << ";" << std::endl;
         return *this;

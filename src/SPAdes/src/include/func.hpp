@@ -6,14 +6,14 @@
 
 #pragma once
 
-#include "standard_base.hpp"
-#include "boost/function.hpp"
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
 
 namespace func {
 
 //to use with boost::function-s
 template<class T>
-void Composition(T t, boost::function<void(T)> f1,
+void Compose(T t, boost::function<void(T)> f1,
 		boost::function<void(T)> f2) {
 	if (f1)
 		f1(t);
@@ -21,10 +21,16 @@ void Composition(T t, boost::function<void(T)> f1,
 		f2(t);
 }
 
+template<class T>
+boost::function<void(T)> Composition(boost::function<void(T)> f1,
+		boost::function<void(T)> f2) {
+    return boost::bind(func::Compose<T>, _1, f1, f2);
+}
+
 template<class A, class B>
 class Func {
 public:
-	typedef function<B(A)> function_t;
+	typedef boost::function<B(A)> function_t;
 
 	virtual B Apply(A a) const = 0;
 
@@ -92,12 +98,12 @@ const shared_ptr<Predicate<T>> And(const shared_ptr<Predicate<T>>& a,
 template<class T>
 const shared_ptr<Predicate<T>> Or(const shared_ptr<Predicate<T>>& a,
 		const shared_ptr<Predicate<T>>& b) {
-	return OrOperator<T>(a, b);
+	return make_shared<OrOperator<T>>(a, b);
 }
 
 template<class T>
 const shared_ptr<Predicate<T>> Not(const shared_ptr<Predicate<T>>& a) {
-	return NotOperator<T>(a);
+	return make_shared<NotOperator<T>>(a);
 }
 
 template<class T>
@@ -106,6 +112,16 @@ public:
 
 	bool Check(T /*t*/) const {
 		return true;
+	}
+
+};
+
+template<class T>
+class AlwaysFalse: public Predicate<T> {
+public:
+
+	bool Check(T /*t*/) const {
+		return false;
 	}
 
 };

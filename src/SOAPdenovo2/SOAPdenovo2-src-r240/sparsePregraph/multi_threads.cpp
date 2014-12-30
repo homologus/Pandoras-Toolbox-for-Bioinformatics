@@ -24,6 +24,7 @@
 #include "global.h"
 #include "build_graph.h"
 #include "stdinc.h"
+#include <unistd.h>
 
 #include "build_preArc.h"
 

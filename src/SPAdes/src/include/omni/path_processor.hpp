@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "standard_base.hpp"
 #include "dijkstra_tools/dijkstra_helper.hpp"
 
 namespace omnigraph {
@@ -79,7 +80,7 @@ public:
 		//TODO: doesn`t work with parallel simplification
 		for (auto I = g_.in_begin(v), E = g_.in_end(v); I != E; ++I) {
 			EdgeId edge = *I;
-//		BOOST_FOREACH(EdgeId edge, g_.IncomingEdges(v)) {
+//		for (EdgeId edge : g_.IncomingEdges(v)) {
 			path_.push_back(edge);
 			error_code |= Go(g_.EdgeStart(edge), min_len,
 					cur_len + g_.length(edge), dsts_to_start);
@@ -131,6 +132,7 @@ public:
 		return error_code; // 3 two mistakes, 2 bad dijkstra, 1 bad dfs, 0 = okay
 	}
 
+	//todo remove setters
 	void SetMinLens(const vector<size_t>& new_min_lens) {
 		min_lens_ = new_min_lens;
 	}

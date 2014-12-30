@@ -103,7 +103,7 @@ public:
 //        SetRawCoverage(new_edge, RawCoverage(old_edges.front()));
         size_t kpomers_left = averaging_range_;
         unsigned acc = 0;
-        FOREACH(EdgeId e, old_edges) {
+        for (EdgeId e : old_edges) {
             if (kpomers_left >= g_.length(e)) {
                 acc += RawCoverage(e);
                 kpomers_left -= g_.length(e);
@@ -163,6 +163,13 @@ public:
         unsigned cov;
         in >> cov;
         SetRawCoverage(e, cov);
+    }
+
+    /*
+     * Is thread safe if different threads process different edges.
+     */
+    bool IsThreadSafe() const {
+        return true;
     }
 
 private:

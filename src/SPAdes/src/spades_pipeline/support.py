@@ -16,6 +16,7 @@ import gzip
 import tempfile
 import shutil
 import options_storage
+import itertools
 
 # constants to print and detect warnings and errors in logs
 SPADES_PY_ERROR_MESSAGE = "== Error == "
@@ -80,6 +81,13 @@ def check_file_existence(filename, message="", log=None, dipspades=False):
     if not os.path.isfile(filename):
         error("file not found: %s (%s)" % (filename, message), log=log, dipspades=dipspades)
     return filename
+
+
+def check_dir_existence(dirname, message="", log=None, dipspades=False):
+    dirname = os.path.abspath(dirname)
+    if not os.path.isdir(dirname):
+        error("directory not found: %s (%s)" % (dirname, message), log=log, dipspades=dipspades)
+    return dirname
 
 
 def check_files_duplication(filenames, log):
@@ -377,7 +385,9 @@ def get_tmp_dir(prefix="", base_dir=None):
 def get_short_reads_type(option):
     for short_reads_type in options_storage.SHORT_READS_TYPES.keys():
         if option.startswith('--' + short_reads_type):
-            return short_reads_type
+            # additional check to except collisions with LONG_READS_TYPES, e.g. --s<#> and --sanger
+            if option[len('--' + short_reads_type):len('--' + short_reads_type) + 1].isdigit():
+                return short_reads_type
     return None
 
 
@@ -426,12 +436,15 @@ def add_to_dataset(option, data, dataset_data):
         data = option[-2:]
 
     if lib_type in options_storage.SHORT_READS_TYPES:
-        record_id = options_storage.MAX_LIBS_NUMBER * sorted(options_storage.SHORT_READS_TYPES).index(lib_type) + lib_number - 1
-    else:  # long reads libraries
-        dataset_data += [{}]
-        record_id = len(dataset_data) - 1
+        record_id = options_storage.MAX_LIBS_NUMBER * sorted(options_storage.SHORT_READS_TYPES.keys()).index(lib_type) \
+                    + lib_number - 1
+    elif lib_type in options_storage.LONG_READS_TYPES:
+        record_id = options_storage.MAX_LIBS_NUMBER * len(options_storage.SHORT_READS_TYPES.keys()) \
+                    + options_storage.LONG_READS_TYPES.index(lib_type)
+    else:
+        error("can't detect library type from option %s!" % option)
 
-    if not dataset_data[record_id]: # setting default values for a new record
+    if not dataset_data[record_id]:  # setting default values for a new record
         if lib_type in options_storage.SHORT_READS_TYPES:
             dataset_data[record_id]['type'] = options_storage.SHORT_READS_TYPES[lib_type]
         else:
@@ -470,9 +483,9 @@ def correct_dataset(dataset_data):
             if 'orientation' in reads_library:
                 del reads_library['orientation']
         if 'orientation' not in reads_library:
-            if reads_library['type'] == 'paired-end':
+            if reads_library['type'] == 'paired-end' or reads_library['type'] == 'hq-mate-pairs':
                 reads_library['orientation'] = 'fr'
-            elif reads_library['type'] == 'mate-pairs' or reads_library['type'] == 'hq-mate-pairs':
+            elif reads_library['type'] == 'mate-pairs':
                 reads_library['orientation'] = 'rf'
         corrected_dataset_data.append(reads_library)
     return corrected_dataset_data
@@ -538,7 +551,6 @@ def check_single_reads_in_options(options, log):
                 "or --s<#> option instead of -s!", log)
 
 
-
 def get_lib_ids_by_type(dataset_data, types):
     if type(types) is not list:
         types = [types]
@@ -581,6 +593,13 @@ def dataset_has_interlaced_reads(dataset_data):
 def dataset_has_additional_contigs(dataset_data):
     for reads_library in dataset_data:
         if reads_library['type'].endswith('contigs'):
+            return True
+    return False
+
+
+def dataset_has_nxmate_reads(dataset_data):
+    for reads_library in dataset_data:
+        if reads_library['type'] == 'nxmate':
             return True
     return False
 
@@ -710,6 +729,33 @@ def split_interlaced_reads(dataset_data, dst, log):
     return new_dataset_data
 
 
+def process_nxmate_reads(dataset_data, dst, log):
+    try:
+        import lucigen_nxmate
+        new_dataset_data = list()
+        for reads_library in dataset_data:
+            new_reads_library = dict(reads_library)
+            if new_reads_library['type'] == 'nxmate':
+                raw_left_reads = new_reads_library['left reads']
+                raw_right_reads = new_reads_library['right reads']
+                new_reads_library['left reads'] = []
+                new_reads_library['right reads'] = []
+                new_reads_library['single reads'] = []
+                for id, left_reads_fpath in enumerate(raw_left_reads):
+                    right_reads_fpath = raw_right_reads[id]
+                    processed_left_reads_fpath, processed_right_reads_fpath, single_reads_fpath = \
+                        lucigen_nxmate.process_reads(left_reads_fpath, right_reads_fpath, dst, log)
+                    new_reads_library['left reads'].append(processed_left_reads_fpath)
+                    new_reads_library['right reads'].append(processed_right_reads_fpath)
+                    new_reads_library['single reads'].append(single_reads_fpath)
+                new_reads_library['type'] = 'mate-pairs'
+                new_reads_library['orientation'] = 'fr'
+            new_dataset_data.append(new_reads_library)
+        return new_dataset_data
+    except ImportError:
+        error("Can't process Lucigen NxMate reads! lucigen_nxmate.py is missing!", log)
+
+
 def pretty_print_reads(dataset_data, log, indent='    '):
     READS_TYPES = ['left reads', 'right reads', 'interlaced reads', 'single reads']
     for id, reads_library in enumerate(dataset_data):
@@ -786,24 +832,86 @@ def break_scaffolds(input_filename, threshold, replace_char="N", gzipped=False):
     return modified, new_fasta
 
 
+def comp(letter):
+   return {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C', 'N': 'N'}[letter.upper()]
+
+
+def rev_comp(seq):
+   return ''.join(itertools.imap(comp, seq[::-1]))
+
+
+def get_contig_id(s):
+    values = s.split("_")
+    if len(values) < 2 or (values[0] != ">NODE" and values[0] != "NODE"):
+        warning("Contig %s has unknown ID format" % (s))
+        return None
+    if s.find("'") != -1:
+        return (values[1] + "'")
+    return values[1]
+
+
+def remove_fasta_pref(s):
+    if s.startswith(">"):
+        return s[1:]
+    return s
+
+
 def create_fastg_from_fasta(fasta_filename, fastg_filename, log=None):
     '''
     contig names are taken from <fastg> and applied to <fasta> for creating new fastg (location is near with fasta)
     '''
-    fasta_data = read_fasta(fasta_filename)
+    #create fastg mapping
+    contig_graph = {}
     fastg_names = [name for (name, seq) in read_fasta(fastg_filename)]
-    new_fastg_data = []
-    new_fastg_filename = fasta_filename[:-6] + ".fastg"
-    for (name, seq) in fasta_data:
-        fastg_name = ""
-        for n in fastg_names:
-            if n.startswith(name):
-                fastg_name = n
-                break
-        if fastg_name:
-            fastg_names.remove(fastg_name)
-            new_fastg_data.append((fastg_name, seq))
+    for name in fastg_names:
+        adjacency = name.split(':')
+        if len(adjacency) == 1:
+            contig_graph[get_contig_id(adjacency[0])] = []
         else:
-            warning("Creating %s: failed to find appropriate name for contig %s (looking for names in %s)! Skipping this contig." %
-                    (new_fastg_filename, name, fastg_filename))
-    write_fasta(new_fastg_filename, new_fastg_data)
+            contig_graph[get_contig_id(adjacency[0])] = [get_contig_id(next) for next in adjacency[1].split(',')]
+
+    fasta_data = read_fasta(fasta_filename)
+    fasta_id_map = {}
+    for (name, seq) in fasta_data:
+        fasta_id_map[get_contig_id(name)] = remove_fasta_pref(name)
+        fasta_id_map[get_contig_id(name) + "'"] = remove_fasta_pref(name) + "'"
+
+    result_fastg = []
+    #print fasta_id_map
+    #print contig_graph
+    for (name, seq) in fasta_data:
+        cur_id = name
+        new_name = cur_id
+        adjacent_list = contig_graph[get_contig_id(cur_id)]
+        #print adjacent_list
+        if len(adjacent_list) > 0:
+            new_name += ":" + ",".join(map(lambda x : fasta_id_map[x], adjacent_list))
+        new_name += ";"
+        result_fastg.append((new_name, seq));
+
+        cur_id = name + "'"
+        new_name = cur_id
+        adjacent_list = contig_graph[get_contig_id(cur_id)]
+        if len(adjacent_list) > 0:
+            new_name += ":" + ",".join(map(lambda x : fasta_id_map[x], adjacent_list))
+        new_name += ";"
+        result_fastg.append((new_name, rev_comp(seq)));
+
+    new_fastg_filename = fasta_filename[:-6] + ".fastg"
+    write_fasta(new_fastg_filename, result_fastg)
+
+
+def is_float(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
+
+
+def is_int(value):
+    try:
+        int(value)
+        return True
+    except ValueError:
+        return False

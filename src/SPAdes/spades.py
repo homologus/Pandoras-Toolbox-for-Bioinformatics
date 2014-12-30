@@ -125,6 +125,12 @@ def print_used_values(cfg, log):
             log.info("  MismatchCorrector will be used")
         else:
             log.info("  MismatchCorrector will be SKIPPED")
+        if cfg["assembly"].cov_cutoff == 'off':
+            log.info("  Coverage cutoff is turned OFF")
+        elif cfg["assembly"].cov_cutoff == 'auto':
+            log.info("  Coverage cutoff is turned ON and threshold will be auto-detected")
+        else:
+            log.info("  Coverage cutoff is turned ON and threshold is " + str(cfg["assembly"].cov_cutoff))
 
     log.info("Other parameters:")
     print_value(cfg, "common", "tmp_dir", "Dir for temp files")
@@ -157,7 +163,8 @@ def fill_cfg(options_to_parse, log):
     cfg = dict()
     # dataset is stored here. We are prepared for up to MAX_LIBS_NUMBER for each type of short-reads libs
     dataset_data = [{} for i in range(options_storage.MAX_LIBS_NUMBER *
-                                      len(options_storage.SHORT_READS_TYPES.keys()))]  # "[{}]*num" doesn't work here!
+                                      len(options_storage.SHORT_READS_TYPES.keys()) +
+                                      len(options_storage.LONG_READS_TYPES))]  # "[{}]*num" doesn't work here!
 
     # for parsing options from "previous run command"
     options_storage.continue_mode = False
@@ -168,6 +175,8 @@ def fill_cfg(options_to_parse, log):
             options_storage.output_dir = os.path.abspath(arg)
         elif opt == "--tmp-dir":
             options_storage.tmp_dir = os.path.abspath(arg)
+        elif opt == "--configs-dir":
+            options_storage.configs_dir = support.check_dir_existence(arg)
         elif opt == "--reference":
             options_storage.reference = support.check_file_existence(arg, 'reference', log)
         elif opt == "--dataset":
@@ -221,7 +230,8 @@ def fill_cfg(options_to_parse, log):
             options_storage.continue_mode = True
         elif opt == "--restart-from":
             if arg not in ['ec', 'as', 'mc'] and not arg.startswith('k'):
-                support.error("wrong value for --restart-from option: " + arg + " (only 'ec', 'as', 'k<int>', 'mc' are available)", log)
+                support.error("wrong value for --restart-from option: " + arg +
+                              " (should be 'ec', 'as', 'k<int>', or 'mc'", log)
             options_storage.continue_mode = True
             options_storage.restart_from = arg
 
@@ -235,7 +245,16 @@ def fill_cfg(options_to_parse, log):
             elif arg in ['33', '64']:
                 options_storage.qvoffset = int(arg)
             else:
-                support.error('wrong PHRED quality offset value ' + str(arg) + ': should be either 33 or 64', log)
+                support.error('wrong PHRED quality offset value: ' + arg +
+                              ' (should be either 33, 64, or \'auto\')', log)
+        elif opt == "--cov-cutoff":
+            if arg == 'auto' or arg == 'off':
+                options_storage.cov_cutoff = arg
+            elif support.is_float(arg) and float(arg) > 0.0:
+                options_storage.cov_cutoff = float(arg)
+            else:
+                support.error('wrong value for --cov-cutoff option: ' + arg +
+                              ' (should be a positive float number, or \'auto\', or \'off\')', log)
         elif opt == '-i' or opt == "--iterations":
             options_storage.iterations = int(arg)
 
@@ -350,6 +369,7 @@ def fill_cfg(options_to_parse, log):
         cfg["assembly"].__dict__["careful"] = options_storage.careful
         cfg["assembly"].__dict__["disable_rr"] = options_storage.disable_rr
         cfg["assembly"].__dict__["diploid_mode"] = options_storage.diploid_mode
+        cfg["assembly"].__dict__["cov_cutoff"] = options_storage.cov_cutoff
         if options_storage.spades_heap_check:
             cfg["assembly"].__dict__["heap_check"] = options_storage.spades_heap_check
         if options_storage.read_buffer_size:
@@ -398,9 +418,21 @@ def get_options_from_params(params_filename, spades_py_name=None):
         return None, None
     params = open(params_filename, 'r')
     cmd_line = params.readline().strip()
+    spades_prev_version = None
+    for line in params:
+        if line.find('SPAdes version:') != -1:
+            spades_prev_version = line.split('SPAdes version:')[1]
+            break
     params.close()
+    if spades_prev_version is None:
+        support.error("failed to parse SPAdes version of the previous run! "
+                      "Please restart from the beginning or specify another output directory.")
+    if spades_prev_version.strip() != spades_version.strip():
+        support.error("SPAdes version of the previous run (%s) is not equal to the current version of SPAdes (%s)! "
+                      "Please restart from the beginning or specify another output directory."
+                      % (spades_prev_version.strip(), spades_version.strip()))
     if spades_py_name is None or cmd_line.find(os.path.basename(spades_py_name)) == -1:
-        spades_py_name = 'spades.py' # try default name
+        spades_py_name = 'spades.py'  # try default name
     else:
         spades_py_name = os.path.basename(spades_py_name)
     spades_py_pos = cmd_line.find(spades_py_name)
@@ -478,9 +510,9 @@ def main(args):
         log.info(command)
 
     # special case
-    if "mismatch_corrector" in cfg and not support.get_lib_ids_by_type(dataset_data, 'paired-end'):
-        support.warning('cannot perform mismatch correction without at least one paired-end library! Skipping this step.', log)
-        del cfg["mismatch_corrector"]
+#    if "mismatch_corrector" in cfg and not support.get_lib_ids_by_type(dataset_data, 'paired-end'):
+#        support.warning('cannot perform mismatch correction without at least one paired-end library! Skipping this step.', log)
+#        del cfg["mismatch_corrector"]
 
     print_used_values(cfg, log)
     log.removeHandler(params_handler)
@@ -491,12 +523,16 @@ def main(args):
         log.info("\n======= SPAdes pipeline started. Log can be found here: " + log_filename + "\n")
 
     # splitting interlaced reads and processing Ns in additional contigs if needed
-    if support.dataset_has_interlaced_reads(dataset_data) or support.dataset_has_additional_contigs(dataset_data):
+    if support.dataset_has_interlaced_reads(dataset_data) or support.dataset_has_additional_contigs(dataset_data)\
+            or support.dataset_has_nxmate_reads(dataset_data):
         dir_for_split_reads = os.path.join(options_storage.output_dir, 'split_input')
-        if support.dataset_has_interlaced_reads(dataset_data):
+        if support.dataset_has_interlaced_reads(dataset_data) or support.dataset_has_nxmate_reads(dataset_data):
             if not os.path.isdir(dir_for_split_reads):
                 os.makedirs(dir_for_split_reads)
-            dataset_data = support.split_interlaced_reads(dataset_data, dir_for_split_reads, log)
+            if support.dataset_has_interlaced_reads(dataset_data):
+                dataset_data = support.split_interlaced_reads(dataset_data, dir_for_split_reads, log)
+            if support.dataset_has_nxmate_reads(dataset_data):
+                dataset_data = support.process_nxmate_reads(dataset_data, dir_for_split_reads, log)
         if support.dataset_has_additional_contigs(dataset_data):
             dataset_data = support.process_Ns_in_additional_contigs(dataset_data, dir_for_split_reads, log)
         options_storage.dataset_yaml_filename = os.path.join(options_storage.output_dir, "input_dataset.yaml")
@@ -509,7 +545,10 @@ def main(args):
         if os.path.isdir(tmp_configs_dir) and not options_storage.continue_mode:
             shutil.rmtree(tmp_configs_dir)
         if not os.path.isdir(tmp_configs_dir):
-            dir_util.copy_tree(os.path.join(spades_home, "configs"), tmp_configs_dir, preserve_times=False)
+            if options_storage.configs_dir:
+                dir_util.copy_tree(options_storage.configs_dir, tmp_configs_dir, preserve_times=False)
+            else:
+                dir_util.copy_tree(os.path.join(spades_home, "configs"), tmp_configs_dir, preserve_times=False)
 
         corrected_dataset_yaml_filename = ''
         if "error_correction" in cfg:
@@ -542,6 +581,7 @@ def main(args):
                     bh_cfg.__dict__["dataset_yaml_filename"] = cfg["dataset"].yaml_filename
 
                 log.info("\n===== %s started. \n" % STAGE_NAME)
+
                 hammer_logic.run_hammer(corrected_dataset_yaml_filename, tmp_configs_dir, bin_home, bh_cfg, not_used_dataset_data,
                     ext_python_modules_home, log)
                 log.info("\n===== %s finished. \n" % STAGE_NAME)
@@ -653,44 +693,11 @@ def main(args):
 
                     log.info("\n===== %s started." % STAGE_NAME)
                     # detecting paired-end library with the largest insert size
-                    est_params_data = pyyaml.load(open(os.path.join(latest_dir, "final.lib_data"), 'r'))
-                    max_IS_library = None
-                    for reads_library in est_params_data:
-                        if reads_library['type'] == 'paired-end':
-                            if not max_IS_library or float(reads_library["insert size mean"]) > float(max_IS_library["insert size mean"]):
-                                max_IS_library = reads_library
-                    if not max_IS_library:
-                        support.error('Mismatch correction cannot be performed without at least one paired-end library!', log)
-                    if not max_IS_library["insert size mean"]:
-                        support.warning('Failed to estimate insert size for all paired-end libraries. Starting Mismatch correction'
-                                        ' based on the first paired-end library and with default insert size.', log)
-                    else:
-                        cfg["mismatch_corrector"].__dict__["insert-size"] = round(max_IS_library["insert size mean"])
-                    yaml_dirname = os.path.dirname(options_storage.dataset_yaml_filename)
-                    cfg["mismatch_corrector"].__dict__["1"] = list(map(lambda x: os.path.join(yaml_dirname, x),
-                        max_IS_library['left reads']))
-                    cfg["mismatch_corrector"].__dict__["2"] = list(map(lambda x: os.path.join(yaml_dirname, x),
-                        max_IS_library['right reads']))
+                    cfg["mismatch_corrector"].__dict__["dataset"] = cfg["dataset"].yaml_filename
                     #TODO: add reads orientation
 
-                    import corrector
+                    import corrector_logic
                     corrector_cfg = cfg["mismatch_corrector"]
-                    args = []
-                    for key, values in corrector_cfg.__dict__.items():
-                        if key == "output-dir":
-                            continue
-
-                        # for processing list of reads
-                        if not isinstance(values, list):
-                            values = [values]
-                        for value in values:
-                            if len(key) == 1:
-                                args.append('-' + key)
-                            else:
-                                args.append('--' + key)
-                            if value is not None:
-                                args.append(value)
-
                     # processing contigs and scaffolds (or only contigs)
                     for assembly_type, (corrected, assembled) in to_correct.items():
                         if options_storage.continue_mode and os.path.isfile(corrected):
@@ -700,21 +707,22 @@ def main(args):
                         support.continue_from_here(log)
                         log.info("\n== Processing of " + assembly_type + "\n")
 
-                        cur_args = args[:]
-                        cur_args += ['-c', assembled]
-                        tmp_dir_for_corrector = support.get_tmp_dir(prefix="mis_cor_%s_" % assembly_type)
-                        cur_args += ['--output-dir', tmp_dir_for_corrector]
+                        tmp_dir_for_corrector = os.path.join(cfg["common"].output_dir, "mismatch_corrector", assembly_type)
 
+                        cfg["mismatch_corrector"].__dict__["output_dir"] = tmp_dir_for_corrector
                         # correcting
-                        corrector.main(cur_args, ext_python_modules_home, log)
-
+                        corr_cfg = merge_configs(cfg["mismatch_corrector"], cfg["common"])
+                        
                         result_corrected_filename = os.path.join(tmp_dir_for_corrector, "corrected_contigs.fasta")
-                        # moving corrected contigs (scaffolds) to SPAdes output dir
-                        if os.path.isfile(result_corrected_filename):
-                            shutil.move(result_corrected_filename, corrected)
 
-                        if os.path.isdir(tmp_dir_for_corrector):
-                            shutil.rmtree(tmp_dir_for_corrector)
+                        corrector_logic.run_corrector( tmp_configs_dir, bin_home, corr_cfg,
+                        ext_python_modules_home, log, assembled, result_corrected_filename)
+
+                        if os.path.isfile(result_corrected_filename):
+                            shutil.copyfile(result_corrected_filename, corrected)
+                        tmp_d = os.path.join(tmp_dir_for_corrector, "tmp")
+                        if os.path.isdir(tmp_d) and not cfg["common"].developer_mode:
+                            shutil.rmtree(tmp_d)
 
                         assembled_fastg = assembled[:-6] + ".fastg"
                         if os.path.isfile(assembled_fastg):
@@ -796,7 +804,7 @@ def main(args):
             else:
                 log.exception(exc_value)
                 support.error("exception caught: %s" % exc_type, log)
-    except BaseException: # since python 2.5 system-exiting exceptions (e.g. KeyboardInterrupt) are derived from BaseException
+    except BaseException:  # since python 2.5 system-exiting exceptions (e.g. KeyboardInterrupt) are derived from BaseException
         exc_type, exc_value, _ = sys.exc_info()
         if exc_type == SystemExit:
             sys.exit(exc_value)

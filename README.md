@@ -35,14 +35,6 @@ http://sun.aei.polsl.pl/kmc/download/kmc.tar.gz
 In case of doubt, please consult the original documentations.
 
 
-NCBI BLAST - aligner
-====================
-
-ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.2.30+-src.tar.gz
-
-BLAST is a "United States Government Work" under the terms of the United States Copyright Act.  
-
-
 
 DALIGNER - Pacbio aligner
 =======================

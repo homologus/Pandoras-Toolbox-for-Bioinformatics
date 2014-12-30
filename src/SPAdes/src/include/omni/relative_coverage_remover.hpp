@@ -13,7 +13,7 @@ template<class EdgeContainer>
 void SingleEdgeAdapter(
         const EdgeContainer& edges,
         boost::function<void(typename EdgeContainer::value_type)> single_edge_handler_f) {
-    FOREACH(auto e, edges) {
+    for (auto e : edges) {
         single_edge_handler_f(e);
     }
 }
@@ -32,7 +32,7 @@ void VisualizeNontrivialComponentAutoInc(
     auto resulting_colorer = make_shared<visualization::CompositeGraphColorer<Graph>>(colorer, edge_colorer);
     if (edges.size() > 1) {
         set<typename Graph::VertexId> vertices;
-        FOREACH(auto e, edges) {
+        for (auto e : edges) {
             vertices.insert(g.EdgeStart(e));
             vertices.insert(g.EdgeEnd(e));
         }
@@ -44,14 +44,6 @@ void VisualizeNontrivialComponentAutoInc(
 }
 
 namespace relative_coverage {
-
-template<class Graph>
-vector<typename Graph::EdgeId> AdjacentEdges(const Graph& g, typename Graph::VertexId v) {
-    vector<typename Graph::EdgeId> answer;
-    push_back_all(answer, g.OutgoingEdges(v));
-    push_back_all(answer, g.IncomingEdges(v));
-    return answer;
-}
 
 template<class Graph>
 class Component {
@@ -99,7 +91,7 @@ public:
             contains_deadends_ = true;
         }
         inner_vertices_.insert(v);
-        FOREACH(EdgeId e, AdjacentEdges(g_, v)) {
+        for (EdgeId e : g_.IncidentEdges(v)) {
             //seems to correctly handle loops
             if (edges_.count(e) == 0) {
                 edges_.insert(e);
@@ -182,7 +174,7 @@ public:
     template<class EdgeContainer>
     double MaxLocalCoverage(const EdgeContainer& edges, VertexId v) const {
         double answer = 0.0;
-        FOREACH(EdgeId e, edges) {
+        for (EdgeId e : edges) {
             answer = max(answer, LocalCoverage(e, v));
         }
         return answer;
@@ -224,7 +216,7 @@ class LongestPathFinder {
 
         //minus infinity for incoming tips
         distance = std::numeric_limits<int>::min();
-        FOREACH (EdgeId e, g_.IncomingEdges(v)) {
+        for (EdgeId e : g_.IncomingEdges(v)) {
             VertexId start = g_.EdgeStart(e);
             if (component_.contains(e)) {
                 if (max_distance_.count(start) == 0) {
@@ -270,7 +262,7 @@ public:
     //-1u if component contains a cycle or no path between terminating vertices
     size_t Find() {
         int answer = 0;
-        FOREACH(VertexId v, component_.terminating_vertices()) {
+        for (VertexId v : component_.terminating_vertices()) {
             ProcessVertex(v);
             if (cycle_detected_)
                 return -1u;
@@ -297,7 +289,7 @@ class ComponentChecker {
     double max_coverage_;
 
     bool CoverageCheck(const Component<Graph>& component) const {
-        FOREACH(EdgeId e, component.edges()) {
+        for (EdgeId e : component.edges()) {
             TRACE("Too high coverage! Component contains highly covered edge " << g_.str(e)
                   << " while threshold was " << max_coverage_);
             if (math::gr(g_.coverage(e), max_coverage_)) {
@@ -405,7 +397,7 @@ private:
 
     bool IsTerminateVertex(VertexId v) const {
         double base_coverage = rel_helper_.MaxLocalCoverage(
-                RetainEdgesFromComponent(AdjacentEdges(g_, v)), v);
+                RetainEdgesFromComponent(g_.IncidentEdges(v)), v);
         return CheckAnyFilteredHighlyCovered(g_.OutgoingEdges(v),
                                              v, base_coverage)
                 && CheckAnyFilteredHighlyCovered(
@@ -424,7 +416,7 @@ private:
     vector<EdgeId> FilterEdgesFromComponent(
             const EdgeContainer& edges) const {
         vector<EdgeId> answer;
-        FOREACH(EdgeId e, edges) {
+        for (EdgeId e : edges) {
             if (!component_.contains(e)) {
                 answer.push_back(e);
             }
@@ -436,7 +428,7 @@ private:
     vector<EdgeId> RetainEdgesFromComponent(
             const EdgeContainer& edges) const {
         vector<EdgeId> answer;
-        FOREACH(EdgeId e, edges) {
+        for (EdgeId e : edges) {
             if (component_.contains(e)) {
                 answer.push_back(e);
             }
