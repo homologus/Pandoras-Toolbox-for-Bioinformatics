@@ -20,7 +20,7 @@ all:
 	cd src/HMMEST && && ./configure && make 
 	cd src/KMC && make && cp bin/* ../../$(KMC_BIN_DIR)
 	cd src/Minia && make  && cp minia ../../$(MINIA_BIN_DIR)
-	cd src/RAPSearch2 && make
+	cd src/RAPSearch2 && ln -s ../../boost_1_55_0/boost boost; ln -s ../../boost_1_55_0/stage/lib/libboost_chrono.a libboost_chrono.a; ln -s ../../boost_1_55_0/stage/lib/libboost_serialization.a libboost_serialization.a; ln -s ../../boost_1_55_0/stage/lib/libboost_system.a libboost_system.a; ln -s ../../boost_1_55_0/stage/lib/libboost_thread.a libboost_thread.a && make
 	cd src/samtools/samtools-1.1  && make
 	cd src/samtools/bcftools-1.1  && make
 	cd src/samtools/htslib-1.1  && make
