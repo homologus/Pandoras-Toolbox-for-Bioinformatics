@@ -37,7 +37,6 @@ clean:
 	cd Inchworm && make clean
 	cd Chrysalis && $(MAKE) clean UNSUPPORTED=yes
 	cd trinity-plugins && $(MAKE) clean 
-	cd sample_data/ && make clean
 
 
 testTrinity:

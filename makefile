@@ -17,17 +17,17 @@ all:
 	cd src/bwa && make && cp bwa ../../$(BWA_BIN_DIR)
 	cd src/DALIGNER/DALIGNER && make
 	cd src/DALIGNER/DAZZ_DB && make
-	cd src/HMMEST && make 
+	cd src/HMMEST && && ./configure && make 
 	cd src/KMC && make && cp bin/* ../../$(KMC_BIN_DIR)
-	cd src/Minia && make
+	cd src/Minia && make  && cp minia ../../$(MINIA_BIN_DIR)
 	cd src/RAPSearch2 && make
 	cd src/samtools/samtools-1.1  && make
 	cd src/samtools/bcftools-1.1  && make
 	cd src/samtools/htslib-1.1  && make
+	cd src/SPAdes && sh spades_compile.sh
 	cd src/SOAPdenovo2/SOAPdenovo2-src-r240 && make
 	cd src/SOAPdenovo2/SOAPdenovo-Trans-src-v1.04 && sh make.sh
 	cd src/Trinity && make
-	cd src/SPAdes && sh spades_compile.sh
 
 clean:
 	cd src/bcalm && make clean
@@ -36,7 +36,6 @@ clean:
 	cd src/bwa && make clean
 	cd src/DALIGNER/DALIGNER && make clean
 	cd src/DALIGNER/DAZZ_DB && make clean
-	cd src/HMMEST && make clean
 	cd src/KMC && make clean
 	cd src/Minia && make clean
 	cd src/RAPSearch2 && make clean
@@ -46,4 +45,4 @@ clean:
 	cd src/SOAPdenovo2/SOAPdenovo2-src-r240 && make clean
 	cd src/SOAPdenovo2/SOAPdenovo-Trans-src-v1.04 && sh clean.sh
 	cd src/Trinity && make clean
-	rm -rf bin
+	-rm -rf bin
