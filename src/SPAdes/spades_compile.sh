@@ -20,5 +20,4 @@ set -e
 cd $BASEDIR/$BUILD_DIR
 cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$PREFIX $BASEDIR/src $*
 make -j 8
-make install
 cd $PREFIX
