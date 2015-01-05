@@ -308,7 +308,7 @@ configure: failed program was:
 configure:3574: result: no
 configure:3446: checking whether pthreads work without any flags
 configure:3544: gcc -o conftest -g -O2    conftest.c   >&5
-/tmp/cc2csm9T.o: In function `main':
+/tmp/cc0olc1x.o: In function `main':
 /home/msamanta/Toolboxes/Pandoras-Toolbox/src/HMMEST/conftest.c:23: undefined reference to `pthread_join'
 /home/msamanta/Toolboxes/Pandoras-Toolbox/src/HMMEST/conftest.c:24: undefined reference to `__pthread_register_cancel'
 /home/msamanta/Toolboxes/Pandoras-Toolbox/src/HMMEST/conftest.c:25: undefined reference to `pthread_create'
