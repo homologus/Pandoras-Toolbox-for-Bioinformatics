@@ -14,10 +14,13 @@ TRINITY_BIN_DIR = bin/trinity
 DALIGNER_FILES=daligner HPCdaligner LAsort LAmerge LAshow LAsplit LAcat LAcheck
 DAZZ_FILES=fasta2DB DB2fasta quiva2DB DB2quiva DBsplit DBdust Catrack DBshow DBstats DBrm simulator
 HMM_FILES=alimask hmmalign hmmc2 hmmconvert hmmemit hmmfetch hmmlogo hmmpgmd hmmpgmd_client_example.pl hmmpress hmmpress.itest.pl hmmscan hmmsearch hmmsim hmmstat jackhmmer nhmmer nhmmscan phmmer
+CHRYSALIS_FILES=chrysalis.notes QuantifyGraph GraphFromFasta ReadsToComponents.pl IsoformAugment ReadsToTranscripts BreakTransByPairs  JoinTransByPairs  RunButterfly checkLock Chrysalis TranscriptomeFromVaryK
+
 
 all: 
 	-rm -rf bin
-	-mkdir -p $(BCALM_BIN_DIR) $(BWA_BIN_DIR) $(DALIGNER_BIN_DIR) $(DALIGNER_BIN_DIR)/Daligner $(DALIGNER_BIN_DIR)/db $(HMMEST_BIN_DIR) $(KMC_BIN_DIR) $(MINIA_BIN_DIR) $(SAMTOOLS_BIN_DIR) $(SOAP_BIN_DIR) $(RAPSEARCH_BIN_DIR) $(SPADES_BIN_DIR) $(TRINITY_BIN_DIR) $(SAILFISH_BIN_DIR)
+	-mkdir -p $(BCALM_BIN_DIR) $(BWA_BIN_DIR) $(DALIGNER_BIN_DIR) $(DALIGNER_BIN_DIR)/Daligner $(DALIGNER_BIN_DIR)/db $(HMMEST_BIN_DIR) $(KMC_BIN_DIR) $(MINIA_BIN_DIR) $(SAMTOOLS_BIN_DIR) $(SOAP_BIN_DIR) $(RAPSEARCH_BIN_DIR) $(SPADES_BIN_DIR) $(TRINITY_BIN_DIR) $(SAILFISH_BIN_DIR)  $(TRINITY_BIN_DIR)/Inchworm $(TRINITY_BIN_DIR)/Chrysalis $(TRINITY_BIN_DIR)/Butterfly
+
 	cd src/bcalm && make && cp bcalm ../../$(BCALM_BIN_DIR)
 	cd src/bwa && make && cp bwa ../../$(BWA_BIN_DIR)
 	cd src/DALIGNER/DALIGNER && make  && cp $(DALIGNER_FILES) ../../../$(DALIGNER_BIN_DIR)/Daligner 
@@ -32,7 +35,7 @@ all:
 	cd src/SOAPdenovo2/SOAPdenovo2-src-r240 && make && cp SOAP* ../../../$(SOAP_BIN_DIR)
 	cd src/SOAPdenovo2/SOAPdenovo-Trans-src-v1.04 && sh make.sh && cp SOAP* ../../../$(SOAP_BIN_DIR)
 	cd src/SPAdes && ln -s ../../../../boost_1_55_0/boost ext/include/boost && sh spades_compile.sh && cp build_spades/bin/* ../../$(SPADES_BIN_DIR) && cp *py ../../$(SPADES_BIN_DIR)
-	cd src/Trinity && make && cp Trinity ../../$(TRINITY_BIN_DIR)
+	cd src/Trinity && make && cp Trinity ../../$(TRINITY_BIN_DIR) && cp Inchworm/bin/* ../../$(TRINITY_BIN_DIR)/Inchworm && cd Chrysalis && cp $(CHRYSALIS_FILES) ../../../$(TRINITY_BIN_DIR)/Chrysalis && cd .. && cp Butterfly/Butterfly.jar ../../$(TRINITY_BIN_DIR)/Butterfly
 
 clean:
 	cd src/bcalm && make clean
