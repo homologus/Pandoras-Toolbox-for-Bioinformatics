@@ -6,6 +6,7 @@ KMC_BIN_DIR = bin/kmc
 MINIA_BIN_DIR=bin/minia
 SAMTOOLS_BIN_DIR=bin/samtools
 RAPSEARCH_BIN_DIR=bin/rapsearch
+SAILFISH_BIN_DIR=bin/sailfish
 SOAP_BIN_DIR=bin/soapdenovo
 SPADES_BIN_DIR = bin/spades
 TRINITY_BIN_DIR = bin/trinity
@@ -16,7 +17,7 @@ HMM_FILES=alimask hmmalign hmmc2 hmmconvert hmmemit hmmfetch hmmlogo hmmpgmd hmm
 
 all: 
 	-rm -rf bin
-	-mkdir -p $(BCALM_BIN_DIR) $(BWA_BIN_DIR) $(DALIGNER_BIN_DIR) $(DALIGNER_BIN_DIR)/Daligner $(DALIGNER_BIN_DIR)/db $(HMMEST_BIN_DIR) $(KMC_BIN_DIR) $(MINIA_BIN_DIR) $(SAMTOOLS_BIN_DIR) $(SOAP_BIN_DIR) $(RAPSEARCH_BIN_DIR) $(SPADES_BIN_DIR) $(TRINITY_BIN_DIR)
+	-mkdir -p $(BCALM_BIN_DIR) $(BWA_BIN_DIR) $(DALIGNER_BIN_DIR) $(DALIGNER_BIN_DIR)/Daligner $(DALIGNER_BIN_DIR)/db $(HMMEST_BIN_DIR) $(KMC_BIN_DIR) $(MINIA_BIN_DIR) $(SAMTOOLS_BIN_DIR) $(SOAP_BIN_DIR) $(RAPSEARCH_BIN_DIR) $(SPADES_BIN_DIR) $(TRINITY_BIN_DIR) $(SAILFISH_BIN_DIR)
 	cd src/bcalm && make && cp bcalm ../../$(BCALM_BIN_DIR)
 	cd src/bwa && make && cp bwa ../../$(BWA_BIN_DIR)
 	cd src/DALIGNER/DALIGNER && make  && cp $(DALIGNER_FILES) ../../../$(DALIGNER_BIN_DIR)/Daligner 
