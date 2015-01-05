@@ -30,7 +30,7 @@ all:
 	cd src/samtools/htslib-1.1  && make && cp bgzip ../../../$(SAMTOOLS_BIN_DIR)
 	cd src/SOAPdenovo2/SOAPdenovo2-src-r240 && make && cp SOAP* ../../../$(SOAP_BIN_DIR)
 	cd src/SOAPdenovo2/SOAPdenovo-Trans-src-v1.04 && sh make.sh && cp SOAP* ../../../$(SOAP_BIN_DIR)
-	cd src/SPAdes && sh spades_compile.sh && cp build_spades/bin/* ../../$(SPADES_BIN_DIR) && cp *py ../../$(SPADES_BIN_DIR)
+	cd src/SPAdes && ln -s ../../../../boost_1_55_0/boost ext/include/boost && sh spades_compile.sh && cp build_spades/bin/* ../../$(SPADES_BIN_DIR) && cp *py ../../$(SPADES_BIN_DIR)
 	cd src/Trinity && make && cp Trinity ../../$(TRINITY_BIN_DIR)
 
 clean:
