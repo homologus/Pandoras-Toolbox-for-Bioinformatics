@@ -1,24 +1,24 @@
 Toolbox
 =======
 
-A collection of efficient programs, modified for our needs. The collection is available under GPL V3.0 license, but some
-of the individual codes may have more permissive licenses.  
+A collection of well-known bioinformatics programs in one place. The collection is available under GPL V3.0 license, but some of the individual codes may have more permissive licenses.  
 
 Samtools
 ========
+
+https://github.com/samtools
 
 
 HMMEST
 ======
 
+Same as Sean Eddy's HMMER, but was forced to change name for legal reason.
 
 
 KMC - kmer counter
 ===================
 
-
 http://sun.aei.polsl.pl/kmc/
-
 http://sun.aei.polsl.pl/kmc/download/kmc.tar.gz
 
 **** License *****
@@ -42,19 +42,20 @@ DALIGNER - Pacbio aligner
 https://github.com/thegenemyers
 
 DALIGNER - Find all significant local alignments between reads
-DEXTRACTOR 
+DEXTRACTOR -
 DAZZ_DB	- The Dazzler Data Base
 
 
 BWA
 ===
-https://github.com/lh3/bwa
 
+Heng Li's BWA.
+
+https://github.com/lh3/bwa
 
 
 SOAPdenovo2, SOAPdenovo2-trans
 ==============================
-
 
 GPL3.0 license.
 
