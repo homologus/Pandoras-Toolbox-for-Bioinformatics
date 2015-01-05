@@ -24,7 +24,7 @@ all:
 	cd src/HMMEST && ./configure && make && cd src && cp $(HMM_FILES) ../../../$(HMMEST_BIN_DIR) 
 	cd src/KMC && make && cp bin/* ../../$(KMC_BIN_DIR)
 	cd src/Minia && make  && cp minia ../../$(MINIA_BIN_DIR)
-	cd src/RAPSearch2 && rm boost lib*a && make clean && ln -s ../../boost_1_55_0/boost boost; ln -s ../../boost_1_55_0/stage/lib/libboost_chrono.a libboost_chrono.a; ln -s ../../boost_1_55_0/stage/lib/libboost_serialization.a libboost_serialization.a; ln -s ../../boost_1_55_0/stage/lib/libboost_system.a libboost_system.a; ln -s ../../boost_1_55_0/stage/lib/libboost_thread.a libboost_thread.a && make && cp *search ../../$(RAPSEARCH_BIN_DIR)
+	cd src/RAPSearch2 && rm -f boost lib*a && make clean && ln -s ../../boost_1_55_0/boost boost && ln -s ../../boost_1_55_0/stage/lib/libboost_chrono.a libboost_chrono.a && ln -s ../../boost_1_55_0/stage/lib/libboost_serialization.a libboost_serialization.a && ln -s ../../boost_1_55_0/stage/lib/libboost_system.a libboost_system.a && ln -s ../../boost_1_55_0/stage/lib/libboost_thread.a libboost_thread.a && make && cp *search ../../$(RAPSEARCH_BIN_DIR)
 	cd src/samtools/samtools-1.1  && make && cp samtools ../../../$(SAMTOOLS_BIN_DIR) 
 	cd src/samtools/bcftools-1.1  && make && cp bcftools ../../../$(SAMTOOLS_BIN_DIR) 
 	cd src/samtools/htslib-1.1  && make && cp bgzip ../../../$(SAMTOOLS_BIN_DIR)
