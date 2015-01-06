@@ -1,19 +1,19 @@
-m4trace:/usr/share/aclocal-1.11/amversion.m4:23: -1- AC_DEFUN([AM_AUTOMAKE_VERSION], [am__api_version='1.11'
+m4trace:/usr/share/aclocal-1.11/amversion.m4:17: -1- AC_DEFUN([AM_AUTOMAKE_VERSION], [am__api_version='1.11'
 dnl Some users find AM_AUTOMAKE_VERSION and mistake it for a way to
 dnl require some minimum version.  Point them to the right macro.
-m4_if([$1], [1.11.3], [],
+m4_if([$1], [1.11.6], [],
       [AC_FATAL([Do not call $0, use AM_INIT_AUTOMAKE([$1]).])])dnl
 ])
-m4trace:/usr/share/aclocal-1.11/amversion.m4:40: -1- AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION], [AM_AUTOMAKE_VERSION([1.11.3])dnl
+m4trace:/usr/share/aclocal-1.11/amversion.m4:36: -1- AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION], [AM_AUTOMAKE_VERSION([1.11.6])dnl
 m4_ifndef([AC_AUTOCONF_VERSION],
   [m4_copy([m4_PACKAGE_VERSION], [AC_AUTOCONF_VERSION])])dnl
 _AM_AUTOCONF_VERSION(m4_defn([AC_AUTOCONF_VERSION]))])
-m4trace:/usr/share/aclocal-1.11/auxdir.m4:54: -1- AC_DEFUN([AM_AUX_DIR_EXPAND], [dnl Rely on autoconf to set up CDPATH properly.
+m4trace:/usr/share/aclocal-1.11/auxdir.m4:49: -1- AC_DEFUN([AM_AUX_DIR_EXPAND], [dnl Rely on autoconf to set up CDPATH properly.
 AC_PREREQ([2.50])dnl
 # expand $ac_aux_dir to an absolute path
 am_aux_dir=`cd $ac_aux_dir && pwd`
 ])
-m4trace:/usr/share/aclocal-1.11/cond.m4:35: -1- AC_DEFUN([AM_CONDITIONAL], [AC_PREREQ(2.52)dnl
+m4trace:/usr/share/aclocal-1.11/cond.m4:15: -1- AC_DEFUN([AM_CONDITIONAL], [AC_PREREQ(2.52)dnl
  ifelse([$1], [TRUE],  [AC_FATAL([$0: invalid condition: $1])],
 	[$1], [FALSE], [AC_FATAL([$0: invalid condition: $1])])dnl
 AC_SUBST([$1_TRUE])dnl
@@ -33,7 +33,7 @@ AC_CONFIG_COMMANDS_PRE(
   AC_MSG_ERROR([[conditional "$1" was never defined.
 Usually this means the macro was only invoked conditionally.]])
 fi])])
-m4trace:/usr/share/aclocal-1.11/depend.m4:157: -1- AC_DEFUN([_AM_DEPENDENCIES], [AC_REQUIRE([AM_SET_DEPDIR])dnl
+m4trace:/usr/share/aclocal-1.11/depend.m4:28: -1- AC_DEFUN([_AM_DEPENDENCIES], [AC_REQUIRE([AM_SET_DEPDIR])dnl
 AC_REQUIRE([AM_OUTPUT_DEPENDENCY_COMMANDS])dnl
 AC_REQUIRE([AM_MAKE_INCLUDE])dnl
 AC_REQUIRE([AM_DEP_TRACK])dnl
@@ -162,10 +162,10 @@ AM_CONDITIONAL([am__fastdep$1], [
   test "x$enable_dependency_tracking" != xno \
   && test "$am_cv_$1_dependencies_compiler_type" = gcc3])
 ])
-m4trace:/usr/share/aclocal-1.11/depend.m4:167: -1- AC_DEFUN([AM_SET_DEPDIR], [AC_REQUIRE([AM_SET_LEADING_DOT])dnl
+m4trace:/usr/share/aclocal-1.11/depend.m4:164: -1- AC_DEFUN([AM_SET_DEPDIR], [AC_REQUIRE([AM_SET_LEADING_DOT])dnl
 AC_SUBST([DEPDIR], ["${am__leading_dot}deps"])dnl
 ])
-m4trace:/usr/share/aclocal-1.11/depend.m4:186: -1- AC_DEFUN([AM_DEP_TRACK], [AC_ARG_ENABLE(dependency-tracking,
+m4trace:/usr/share/aclocal-1.11/depend.m4:172: -1- AC_DEFUN([AM_DEP_TRACK], [AC_ARG_ENABLE(dependency-tracking,
 [  --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors])
 if test "x$enable_dependency_tracking" != xno; then
@@ -179,7 +179,7 @@ _AM_SUBST_NOTMAKE([AMDEPBACKSLASH])dnl
 AC_SUBST([am__nodep])dnl
 _AM_SUBST_NOTMAKE([am__nodep])dnl
 ])
-m4trace:/usr/share/aclocal-1.11/depout.m4:65: -1- AC_DEFUN([_AM_OUTPUT_DEPENDENCY_COMMANDS], [{
+m4trace:/usr/share/aclocal-1.11/depout.m4:14: -1- AC_DEFUN([_AM_OUTPUT_DEPENDENCY_COMMANDS], [{
   # Autoconf 2.62 quotes --file arguments for eval, but not when files
   # are listed without --file.  Let's play safe and only enable the eval
   # if we detect the quoting.
@@ -230,11 +230,11 @@ m4trace:/usr/share/aclocal-1.11/depout.m4:65: -1- AC_DEFUN([_AM_OUTPUT_DEPENDENC
   done
 }
 ])
-m4trace:/usr/share/aclocal-1.11/depout.m4:79: -1- AC_DEFUN([AM_OUTPUT_DEPENDENCY_COMMANDS], [AC_CONFIG_COMMANDS([depfiles],
+m4trace:/usr/share/aclocal-1.11/depout.m4:75: -1- AC_DEFUN([AM_OUTPUT_DEPENDENCY_COMMANDS], [AC_CONFIG_COMMANDS([depfiles],
      [test x"$AMDEP_TRUE" != x"" || _AM_OUTPUT_DEPENDENCY_COMMANDS],
      [AMDEP_TRUE="$AMDEP_TRUE" ac_aux_dir="$ac_aux_dir"])
 ])
-m4trace:/usr/share/aclocal-1.11/init.m4:110: -1- AC_DEFUN([AM_INIT_AUTOMAKE], [AC_PREREQ([2.62])dnl
+m4trace:/usr/share/aclocal-1.11/init.m4:26: -1- AC_DEFUN([AM_INIT_AUTOMAKE], [AC_PREREQ([2.62])dnl
 dnl Autoconf wants to disallow AM_ names.  We explicitly allow
 dnl the ones we care about.
 m4_pattern_allow([^AM_[A-Z]+FLAGS$])dnl
@@ -318,7 +318,7 @@ AC_CONFIG_COMMANDS_PRE(dnl
 [m4_provide_if([_AM_COMPILER_EXEEXT],
   [AM_CONDITIONAL([am__EXEEXT], [test -n "$EXEEXT"])])])dnl
 ])
-m4trace:/usr/share/aclocal-1.11/init.m4:138: -1- AC_DEFUN([_AC_AM_CONFIG_HEADER_HOOK], [# Compute $1's index in $config_headers.
+m4trace:/usr/share/aclocal-1.11/init.m4:126: -1- AC_DEFUN([_AC_AM_CONFIG_HEADER_HOOK], [# Compute $1's index in $config_headers.
 _am_arg=$1
 _am_stamp_count=1
 for _am_header in $config_headers :; do
@@ -330,7 +330,7 @@ for _am_header in $config_headers :; do
   esac
 done
 echo "timestamp for $_am_arg" >`AS_DIRNAME(["$_am_arg"])`/stamp-h[]$_am_stamp_count])
-m4trace:/usr/share/aclocal-1.11/install-sh.m4:24: -1- AC_DEFUN([AM_PROG_INSTALL_SH], [AC_REQUIRE([AM_AUX_DIR_EXPAND])dnl
+m4trace:/usr/share/aclocal-1.11/install-sh.m4:14: -1- AC_DEFUN([AM_PROG_INSTALL_SH], [AC_REQUIRE([AM_AUX_DIR_EXPAND])dnl
 if test x"${install_sh}" != xset; then
   case $am_aux_dir in
   *\ * | *\	*)
@@ -340,7 +340,7 @@ if test x"${install_sh}" != xset; then
   esac
 fi
 AC_SUBST(install_sh)])
-m4trace:/usr/share/aclocal-1.11/lead-dot.m4:21: -1- AC_DEFUN([AM_SET_LEADING_DOT], [rm -rf .tst 2>/dev/null
+m4trace:/usr/share/aclocal-1.11/lead-dot.m4:12: -1- AC_DEFUN([AM_SET_LEADING_DOT], [rm -rf .tst 2>/dev/null
 mkdir .tst 2>/dev/null
 if test -d .tst; then
   am__leading_dot=.
@@ -349,7 +349,7 @@ else
 fi
 rmdir .tst 2>/dev/null
 AC_SUBST([am__leading_dot])])
-m4trace:/usr/share/aclocal-1.11/make.m4:51: -1- AC_DEFUN([AM_MAKE_INCLUDE], [am_make=${MAKE-make}
+m4trace:/usr/share/aclocal-1.11/make.m4:14: -1- AC_DEFUN([AM_MAKE_INCLUDE], [am_make=${MAKE-make}
 cat > confinc << 'END'
 am__doit:
 	@echo this is the am__doit target
@@ -386,10 +386,10 @@ AC_SUBST([am__quote])
 AC_MSG_RESULT([$_am_result])
 rm -f confinc confmf
 ])
-m4trace:/usr/share/aclocal-1.11/missing.m4:17: -1- AC_DEFUN([AM_MISSING_PROG], [AC_REQUIRE([AM_MISSING_HAS_RUN])
+m4trace:/usr/share/aclocal-1.11/missing.m4:14: -1- AC_DEFUN([AM_MISSING_PROG], [AC_REQUIRE([AM_MISSING_HAS_RUN])
 $1=${$1-"${am_missing_run}$2"}
 AC_SUBST($1)])
-m4trace:/usr/share/aclocal-1.11/missing.m4:42: -1- AC_DEFUN([AM_MISSING_HAS_RUN], [AC_REQUIRE([AM_AUX_DIR_EXPAND])dnl
+m4trace:/usr/share/aclocal-1.11/missing.m4:24: -1- AC_DEFUN([AM_MISSING_HAS_RUN], [AC_REQUIRE([AM_AUX_DIR_EXPAND])dnl
 AC_REQUIRE_AUX_FILE([missing])dnl
 if test x"${MISSING+set}" != xset; then
   case $am_aux_dir in
@@ -407,7 +407,7 @@ else
   AC_MSG_WARN([`missing' script is too old or missing])
 fi
 ])
-m4trace:/usr/share/aclocal-1.11/mkdirp.m4:29: -1- AC_DEFUN([AM_PROG_MKDIR_P], [AC_PREREQ([2.60])dnl
+m4trace:/usr/share/aclocal-1.11/mkdirp.m4:14: -1- AC_DEFUN([AM_PROG_MKDIR_P], [AC_PREREQ([2.60])dnl
 AC_REQUIRE([AC_PROG_MKDIR_P])dnl
 dnl Automake 1.8 to 1.9.6 used to define mkdir_p.  We now use MKDIR_P,
 dnl while keeping a definition of mkdir_p for backward compatibility.
@@ -422,16 +422,16 @@ case $mkdir_p in
   */*) mkdir_p="\$(top_builddir)/$mkdir_p" ;;
 esac
 ])
-m4trace:/usr/share/aclocal-1.11/options.m4:15: -1- AC_DEFUN([_AM_MANGLE_OPTION], [[_AM_OPTION_]m4_bpatsubst($1, [[^a-zA-Z0-9_]], [_])])
-m4trace:/usr/share/aclocal-1.11/options.m4:21: -1- AC_DEFUN([_AM_SET_OPTION], [m4_define(_AM_MANGLE_OPTION([$1]), 1)])
-m4trace:/usr/share/aclocal-1.11/options.m4:27: -1- AC_DEFUN([_AM_SET_OPTIONS], [m4_foreach_w([_AM_Option], [$1], [_AM_SET_OPTION(_AM_Option)])])
-m4trace:/usr/share/aclocal-1.11/options.m4:33: -1- AC_DEFUN([_AM_IF_OPTION], [m4_ifset(_AM_MANGLE_OPTION([$1]), [$2], [$3])])
-m4trace:/usr/share/aclocal-1.11/runlog.m4:19: -1- AC_DEFUN([AM_RUN_LOG], [{ echo "$as_me:$LINENO: $1" >&AS_MESSAGE_LOG_FD
+m4trace:/usr/share/aclocal-1.11/options.m4:14: -1- AC_DEFUN([_AM_MANGLE_OPTION], [[_AM_OPTION_]m4_bpatsubst($1, [[^a-zA-Z0-9_]], [_])])
+m4trace:/usr/share/aclocal-1.11/options.m4:20: -1- AC_DEFUN([_AM_SET_OPTION], [m4_define(_AM_MANGLE_OPTION([$1]), 1)])
+m4trace:/usr/share/aclocal-1.11/options.m4:26: -1- AC_DEFUN([_AM_SET_OPTIONS], [m4_foreach_w([_AM_Option], [$1], [_AM_SET_OPTION(_AM_Option)])])
+m4trace:/usr/share/aclocal-1.11/options.m4:32: -1- AC_DEFUN([_AM_IF_OPTION], [m4_ifset(_AM_MANGLE_OPTION([$1]), [$2], [$3])])
+m4trace:/usr/share/aclocal-1.11/runlog.m4:14: -1- AC_DEFUN([AM_RUN_LOG], [{ echo "$as_me:$LINENO: $1" >&AS_MESSAGE_LOG_FD
    ($1) >&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD
    ac_status=$?
    echo "$as_me:$LINENO: \$? = $ac_status" >&AS_MESSAGE_LOG_FD
    (exit $ac_status); }])
-m4trace:/usr/share/aclocal-1.11/sanity.m4:64: -1- AC_DEFUN([AM_SANITY_CHECK], [AC_MSG_CHECKING([whether build environment is sane])
+m4trace:/usr/share/aclocal-1.11/sanity.m4:14: -1- AC_DEFUN([AM_SANITY_CHECK], [AC_MSG_CHECKING([whether build environment is sane])
 # Just in case
 sleep 1
 echo timestamp > conftest.file
@@ -481,7 +481,7 @@ else
 Check your system clock])
 fi
 AC_MSG_RESULT(yes)])
-m4trace:/usr/share/aclocal-1.11/silent.m4:57: -1- AC_DEFUN([AM_SILENT_RULES], [AC_ARG_ENABLE([silent-rules],
+m4trace:/usr/share/aclocal-1.11/silent.m4:14: -1- AC_DEFUN([AM_SILENT_RULES], [AC_ARG_ENABLE([silent-rules],
 [  --enable-silent-rules          less verbose build output (undo: `make V=1')
   --disable-silent-rules         verbose build output (undo: `make V=0')])
 case $enable_silent_rules in
@@ -524,7 +524,7 @@ AM_BACKSLASH='\'
 AC_SUBST([AM_BACKSLASH])dnl
 _AM_SUBST_NOTMAKE([AM_BACKSLASH])dnl
 ])
-m4trace:/usr/share/aclocal-1.11/strip.m4:30: -1- AC_DEFUN([AM_PROG_INSTALL_STRIP], [AC_REQUIRE([AM_PROG_INSTALL_SH])dnl
+m4trace:/usr/share/aclocal-1.11/strip.m4:19: -1- AC_DEFUN([AM_PROG_INSTALL_STRIP], [AC_REQUIRE([AM_PROG_INSTALL_SH])dnl
 # Installed binaries are usually stripped using `strip' when the user
 # run `make install-strip'.  However `strip' might not be the right
 # tool to use in cross-compilation environments, therefore Automake
@@ -537,7 +537,7 @@ INSTALL_STRIP_PROGRAM="\$(install_sh) -c -s"
 AC_SUBST([INSTALL_STRIP_PROGRAM])])
 m4trace:/usr/share/aclocal-1.11/substnot.m4:14: -1- AC_DEFUN([_AM_SUBST_NOTMAKE])
 m4trace:/usr/share/aclocal-1.11/substnot.m4:19: -1- AC_DEFUN([AM_SUBST_NOTMAKE], [_AM_SUBST_NOTMAKE($@)])
-m4trace:/usr/share/aclocal-1.11/tar.m4:96: -1- AC_DEFUN([_AM_PROG_TAR], [# Always define AMTAR for backward compatibility.  Yes, it's still used
+m4trace:/usr/share/aclocal-1.11/tar.m4:24: -1- AC_DEFUN([_AM_PROG_TAR], [# Always define AMTAR for backward compatibility.  Yes, it's still used
 # in the wild :-(  We should find a proper way to deprecate it ...
 AC_SUBST([AMTAR], ['$${TAR-tar}'])
 m4_if([$1], [v7],
@@ -663,8 +663,8 @@ m4trace:configure.ac:1: -1- m4_pattern_allow([^target_alias$])
 m4trace:configure.ac:2: -1- AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 m4trace:configure.ac:2: -1- m4_pattern_allow([^AM_[A-Z]+FLAGS$])
 m4trace:configure.ac:2: -1- AM_SET_CURRENT_AUTOMAKE_VERSION
-m4trace:configure.ac:2: -1- AM_AUTOMAKE_VERSION([1.11.3])
-m4trace:configure.ac:2: -1- _AM_AUTOCONF_VERSION([2.68])
+m4trace:configure.ac:2: -1- AM_AUTOMAKE_VERSION([1.11.6])
+m4trace:configure.ac:2: -1- _AM_AUTOCONF_VERSION([2.69])
 m4trace:configure.ac:2: -1- m4_pattern_allow([^INSTALL_PROGRAM$])
 m4trace:configure.ac:2: -1- m4_pattern_allow([^INSTALL_SCRIPT$])
 m4trace:configure.ac:2: -1- m4_pattern_allow([^INSTALL_DATA$])
