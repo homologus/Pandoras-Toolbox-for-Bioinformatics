@@ -57,7 +57,7 @@
 #include <ctype.h>
 #include <sys/stat.h>
 
-#include <hdf5.h>
+#include "hdf5.h"
 
 #include "DB.h"
 

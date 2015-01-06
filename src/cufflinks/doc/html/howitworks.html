@@ -1,0 +1,516 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Cufflinks RNA-Seq analysis tools - Background</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
+</head>
+<body>
+<div id="wrap">
+  <div id="top">
+    <div class="lefts">
+    <table width="100%" cellpadding="2">
+      <tr><td>
+        <a href="./index.html"><h1>Cufflinks</h1></a>
+        <h2>Transcript assembly, differential expression, and differential regulation for RNA-Seq</h2>
+      </td><td align="right" valign="middle">
+        <a href="http://bio.math.berkeley.edu/">
+        <img style="vertical-align:middle;padding-top:4px" 
+          border=0 src="images/UCBerkeley-seal.scaled.gif">
+        </a>&nbsp;
+        <a href="http://genomics.jhu.edu/">
+        <img style="vertical-align:middle;padding-top:4px"
+          src="images/JHU-seal.gif" border="0">
+        </a>&nbsp;
+        <a href="http://www.cbcb.umd.edu/"><img style="vertical-align:middle;padding-top:4px" border=0 src="images/cbcb_logo.gif"></a>&nbsp;&nbsp;
+      </td></tr>
+    </table>
+    </div>
+  </div>
+  <div id="subheader">
+  <table width="100%"><tr>
+  <td>
+  		<strong>Please Note</strong> If you have questions 
+		  about how to use Cufflinks or would like more information about 
+		  the software, please email <a href="mailto:tophat.cufflinks@gmail.com"><b>tophat.cufflinks@gmail.com</b></a>, 
+		  though we ask you to have a look at the <a href="http://dx.doi.org/10.1038/nbt.1621">paper</a> 
+		  and the  <a href="http://www.nature.com/nbt/journal/v28/n5/extref/nbt.1621-S1.pdf">
+		  supplemental methods</a> first, as your question may be answered there.
+	</td><td align=right valign=middle>
+  </td></tr>
+  </table>
+  </div>
+  <div id="main">
+    <div id="rightside">
+		<h2>Site Map</h2>
+        <div class="box">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="tutorial.html">Getting started</a></li>
+            <li><a href="manual.html">Manual</a></li>
+            <li><a href="howitworks.html">How Cufflinks works</a></li>
+			  <li><a href="igenomes.html">Index and annotation downloads</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+			  <li><a href="http://www.nature.com/nprot/journal/v7/n3/full/nprot.2012.016.html">Protocol</a></li>
+			  <li><a href="report.html">Benchmarking</a></li>
+          </ul>
+        </div>
+		
+        <h2><u>News and updates</u></h2>
+        <div class="box">
+          <ul>
+            <table width="100%">
+              <tbody>
+                <tr>
+                  <td>New releases and related tools will be announced
+                    through the <a
+                      href="https://lists.sourceforge.net/lists/listinfo/bowtie-bio-announce"><b>mailing
+                        list</b></a></td>
+                </tr>
+              </tbody>
+            </table>
+          </ul>
+        </div>
+        <h2><u>Getting Help</u></h2>
+        <div class="box">
+          <ul>
+            <table width="100%">
+              <tbody>
+                <tr>
+                  <td>Questions about Cufflinks and Cuffdiff should be posted on our <a href="https://groups.google.com/forum/#!forum/tuxedo-tools-users"><b>Google Group</b></a>. Please use <a
+                      href="mailto:tophat.cufflinks@gmail.com">tophat.cufflinks@gmail.com</a> for private communications only.
+                    Please do not email technical questions to
+                    Cufflinks contributors directly.</td>
+                </tr>
+              </tbody>
+            </table>
+          </ul>
+        </div>
+		  
+		
+          <a href="./downloads">
+            <h2><u>Releases</u></h2>
+          </a>
+          <div class="box">
+            <ul>
+              <table width="100%">
+                <tbody>
+                  <tr>
+                    <td>version 2.2.0</td>
+                    <td align="right">5/25/2014</td>
+                  </tr>
+                  <tr>
+                    <td><a href="./downloads/cufflinks-2.2.0.tar.gz"
+                        onclick="javascript:
+                        pageTracker._trackPageview('/downloads/cufflinks_source');
+                        ">&nbsp;&nbsp;&nbsp;Source code</a></td>
+                  </tr>
+                  <tr>
+                    <td><a
+                        href="./downloads/cufflinks-2.2.0.Linux_x86_64.tar.gz"
+                        onclick="javascript:
+                        pageTracker._trackPageview('/downloads/cufflinks');
+                        ">&nbsp;&nbsp;&nbsp;Linux x86_64 binary</a></td>
+                  </tr>
+                  <tr>
+                    <td><a
+                        href="./downloads/cufflinks-2.2.0.OSX_x86_64.tar.gz"
+                        onclick="javascript:
+                        pageTracker._trackPageview('/downloads/cufflinks');
+                        ">&nbsp;&nbsp;&nbsp;Mac OS X x86_64 binary</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </ul>
+          </div>		
+		  <h2>Related Tools</h2>
+          <div class="box">
+            <ul>
+                <li><a href="http://monocle-bio.sourceforge.net">Monocle</a>:
+                  Single-cell RNA-Seq analysis</li>
+				<li><a href="http://compbio.mit.edu/cummeRbund/">CummeRbund</a>:
+	                Visualization of RNA-Seq differential analysis</li>
+              <li><a href="http://tophat.cbcb.umd.edu/">TopHat</a>:
+                Alignment of short RNA-Seq reads</li>
+              <li><a href="http://bowtie.cbcb.umd.edu">Bowtie</a>:
+                Ultrafast short read alignment</li>
+            </ul>
+          </div>
+
+
+
+		  <h2>Publications</h2>
+          <div class="box">
+            <ul>
+              <li style="font-size: x-small; line-height: 130%">
+                <p>Trapnell C, Williams BA, Pertea G, Mortazavi AM, Kwan
+                  G, van Baren MJ, Salzberg SL, Wold B, Pachter L.<b> <a
+                      href="http://dx.doi.org/10.1038/nbt.1621">Transcript
+                      assembly and quantification by RNA-Seq reveals
+                      unannotated transcripts and isoform switching
+                      during cell differentiation</a></b> <br>
+                  <i><a href="http://www.nature.com/nbt">Nature
+                      Biotechnology</a></i> doi:10.1038/nbt.1621</p>
+                <br>
+              </li>
+              <li style="font-size: x-small; line-height: 130%">
+                <p>Roberts A, Trapnell C, Donaghey J, Rinn JL, Pachter
+                  L.<b> <a
+                      href="http://genomebiology.com/2011/12/3/R22/abstract">Improving
+                      RNA-Seq expression estimates by correcting for
+                      fragment bias</a></b> <br>
+                  <i><a href="http://www.genomebiology.com">Genome
+                      Biology</a></i> doi:10.1186/gb-2011-12-3-r22</p>
+                <br>
+              </li>
+              <li style="font-size: x-small; line-height: 130%">
+                <p>Roberts A, Pimentel H, Trapnell C, Pachter
+                  L.<b> <a
+                      href="http://bioinformatics.oxfordjournals.org/content/early/2011/06/21/bioinformatics.btr355.abstract">
+                      Identification of novel transcripts in annotated genomes using RNA-Seq</a></b> <br>
+                  <i><a href="http://bioinformatics.oxfordjournals.org/">Bioinformatics</a></i> doi:10.1093/bioinformatics/btr355</p>
+                <br>
+              </li>
+			  <li style="font-size: x-small; line-height: 130%">
+                <p>Trapnell C, Hendrickson D,Sauvageau S, Goff L, Rinn JL, Pachter L<b> <a
+                      href="http://dx.doi.org/10.1038/nbt.2450">Differential 
+					 analysis of gene regulation at transcript resolution with RNA-seq
+					</a></b> <br>
+                  <i><a href="http://www.nature.com/nbt">Nature
+                      Biotechnology</a></i> doi:10.1038/nbt.2450</p>
+                <br>
+              </li>
+            </ul>
+          </div>
+          <h2>Contributors</h2>
+          <div class="box">
+            <ul>
+              <li><a href="http://www.cs.umd.edu/%7Ecole/">Cole Trapnell</a></li>
+              <li><a href="http://www.cs.berkeley.edu/%7Eadarob/">Adam
+                  Roberts</a></li>
+              <li>Geo Pertea</li>
+			  <li>David Hendrickson<li>
+			  <li>Loyal Goff</li>
+			  <li>Martin Sauvageau</li>
+              <li>Brian Williams</li>
+              <li><a href="http://wormlab.caltech.edu/members/">Ali
+                  Mortazavi</a></li>
+              <li>Gordon Kwan</li>
+              <li>Jeltje van Baren</li>
+			  <li><a href="http://www.rinnlab.com">John Rinn</a></li>
+              <li><a href="http://www.cbcb.umd.edu/%7Esalzberg/">Steven
+                  Salzberg</a></li>
+              <li><a href="http://biology.caltech.edu/Members/Wold">Barbara
+                  Wold</a></li>
+              <li><a href="http://www.math.berkeley.edu/%7Elpachter/">Lior
+                  Pachter</a></li>
+            </ul>
+          </div>
+
+		  <h2>Links</h2>
+		  <div class="box">
+		    <ul>
+		      <li><a href="http://bio.math.berkeley.edu/">Berkeley LMCB</a></li>
+		      <li><a href="http://www.cbcb.umd.edu/">UMD CBCB</a></li>
+			  <li><a href="http://woldlab.caltech.edu/">Wold Lab</a></li>
+		    </ul>
+		  </div>          
+          
+    </div> <!-- End of "rightside" -->
+    <div id="leftside">
+  	  <table><tr><td cellpadding=7>
+  	  <h1>How Cufflinks works</h1><br/>
+      <div id="toc">
+  	    
+		<ul>
+  	    	<li><a href="#whis">What is Cufflinks?</a></li>
+  	    	<ul>
+  	      <li><a href="#hass">How does Cufflinks assemble transcripts?</a></li>
+  	  	  <li><a href="#hqua">How does Cufflinks calculate transcript abundances?</a></li>
+  	  	  <li><a href="#hdis">How does Cufflinks estimate the fragment length distribution?</a></li>
+  	  	  <li><a href="#hsbi">How does Cufflinks identify and correct for sequence bias?</a></li>
+  	  	  <li><a href="#hmul">How does Cufflinks handle multi-mapped reads?</a></li>
+   	  	  <li><a href="#hrga">How does Reference Annotation Based Transcript (RABT) assembly work?</a></li>
+		  <!-- <li><a href="#mrge">How does Cuffmerge work?</a></li> -->
+  	  </ul>
+	  </ul>
+	   <ul> 
+	  	  <li><a href="#diff">What is Cuffdiff?</a></li>
+		  <ul>
+		  <li><a href="#difftest">How does Cuffdiff test for differentially expressed and regulated genes?</a></li>
+		  <li><a href="#diffdiff">What's changed since the paper was published?</a></li>
+	  	  </ul>
+ 	   </ul>
+
+  	    <br/>
+  	  </div>
+  	  <h2 id="whis">What is Cufflinks?</h2><br/>
+  	  <p> Cufflinks is a program that assembles aligned RNA-Seq reads into 
+		transcripts, estimates their abundances, and tests for 
+		differential expression and regulation transcriptome-wide.
+	  	Cufflinks runs on <strong>Linux</strong> and <strong>OS X</strong>.
+	 <p>
+        Cufflinks is described in our recent <b><a href="http://dx.doi.org/10.1038/nbt.1621">paper</a></b>, 
+        and much of the algorithmic and mathematical material is presented in the 	
+        <a href="http://www.nature.com/nbt/journal/v28/n5/extref/nbt.1621-S1.pdf">
+		supplemental methods</a>
+	  </p> 
+  	  <br/>
+	  <h2 id="hass">How does Cufflinks assemble transcripts?</h2><br/>
+	  <p>Cufflinks constructs a parsimonious set of transcripts that "explain" the 
+	  reads observed in an RNA-Seq experiment.  It does so by reducing the 
+	  comparative assembly problem to a problem in maximum matching in bipartite
+	  graphs.  In essence, Cufflinks implements a constructive proof of 
+	  <a href="http://en.wikipedia.org/wiki/Dilworth%27s_theorem">Dilworth's Theorem</a> 
+	  by constructing a covering relation on the read alignments, and finding a 
+	  minimum path cover on the directed acyclic graph for the relation.</p>
+	
+	  <p>While Cufflinks works well with unpaired RNA-Seq reads, it is designed 
+		with paired reads in mind. The assembly algorithm explicitly handles paired end reads by treating
+		the alignment for a given pair as a single object in the covering relation. 
+		The proof of Dilworth's theorem finds a maximum cardinality matching on the 
+		bipartite graph of the transitive closure of the DAG.  However, there is not 
+		necessarily a unique maximum cardinality matching, reflecting the fact 
+		that due to the limited size of RNA-Seq cDNA fragments, we may not know
+		with certainty which outcomes of alternative splicing events go together
+		in the same transcripts.  Cufflinks tries to find the correct parsimonious
+		set of transcripts by performing a <strong>minimum cost</strong> maximum 
+		matching. The cost of associating splicing events is based on the "percent-spliced-in" 
+		score introduced in
+		<p>
+		<ul>
+		<li>Eric T. Wang, Rickard Sandberg, Shujun Luo, Irina Khrebtukova, Lu Zhang, Christine Mayr, Stephen F. Kingsmore, Gary P. Schroth, and Christopher B. Burge,
+			<a href="http://www.nature.com/nature/journal/v456/n7221/abs/nature07509.html">Alternative isoform regulation in human tissue transcriptomes</a>
+			Nature, Volume 456, 470 - 476 (2008)
+	   </ul>
+		
+		<p>
+	    This matching is then extended to a minimum cost path cover of the DAG,
+	    with each path representing a different transcript.</p> <br/>
+		
+		The algorithm builds on ideas behind the  
+		<a href="http://www.bsse.ethz.ch/cbg/software/shorah">ShoRAH</a> algorithm 
+		for haplotype abundance estimation in viral populations, described in:
+		<p>
+		<ul>
+			<li>Nicholas Eriksson, Lior Pachter, Yumi Mitsuya, Soo-Yon Rhee, Chunlin Wang, Baback Gharizadeh, Mostafa Ronaghi, Robert W. Shafer, Niko Beerenwinkel
+		<a href="http://www.ploscompbiol.org/doi/pcbi.1000074">Viral population estimation using pyrosequencing</a>,
+		PLoS Computational Biology, 4(5):e1000074
+		</ul>
+		The assembler also borrows some ideas introduced with the <a href="http://pasa.sourceforge.net/">PASA</a> algorithm for annotating genomes from EST and full length mRNA evidence, described in:
+		<ul>
+			<li>Haas, B.J., Delcher, A.L., Mount, S.M., Wortman, J.R., Smith Jr, R.K., Jr., Hannick, L.I., Maiti, R., Ronning, C.M., Rusch, D.B., Town, C.D. et al. (2003) Improving the Arabidopsis genome annotation using maximal transcript alignment assemblies. <a href="http://nar.oxfordjournals.org/cgi/content/full/31/19/5654">Nucleic Acids Res, 31, 5654-5666</a>. 
+		</ul>
+		<br/>
+		Cufflinks is implemented in C++ and makes substantial use of the 
+		<a href="http://www.boost.org">Boost Libraries</a> as well as the <a href="https://lemon.cs.elte.hu/trac/lemon">LEMON</a>
+		Graph Library, which was launched by the Egerváry Research Group on Combinatorial Optimization (EGRES).
+		
+	  <br/>
+	  <br/>
+  	  <h2 id="hqua">How does Cufflinks calculate transcript abundances?</h2><br/>
+	  <p>
+	  In RNA-Seq experiments, cDNA fragments are sequenced and mapped back to 
+	  genes and ideally, individual transcripts. Properly normalized, the RNA-Seq fragment counts
+	  can be used as a measure of relative abundance of transcripts, 
+	  and Cufflinks measures transcript abundances in <b>F</b>ragments <b>P</b>er 
+	  <b>K</b>ilobase of exon per <b>M</b>illion fragments mapped (<b>FPKM</b>), which is 
+	  analagous to single-read "RPKM", originally proposed in:
+	  </p>
+		<br/>
+	 
+	  <ul>
+		<li>Ali Mortazavi, Brian A Williams, Kenneth McCue, Lorian Schaeffer and Barbara Wold
+			<a href="http://www.nature.com/nmeth/journal/v5/n7/abs/nmeth.1226.html">Mapping and quantifying mammalian transcriptomes by RNA-Seq</a>
+			Nature Methods, Volume 5, 621 - 628 (2008)
+	  </ul>
+	  <br/>
+	  
+	  <p>
+	  	In paired-end RNA-Seq experiments, fragments are sequenced from both ends, 
+		providing two reads for each fragment.  To estimate isoform-level abundances, 
+		one must assign fragments to individual transcripts, which may be 
+		difficult because a read may align to multiple
+	  	isoforms of the same gene.  Cufflinks uses a statistical model of 
+	  	paired-end sequencing experiments to derive a likelihood for the abundances of a set of
+		transcripts given a set of fragments. This likelihood function can be
+		shown to have a unique maximum, which Cufflinks finds using a
+		numerical optimization algorithm.  The program then multiplies these probabilities 
+	  	to compute the overall likelihood that one would observe the fragments in the experiment, 
+	  	given the proposed abundances on the transcripts.  Because Cufflinks' statistical
+	  	model is linear, the likelihood function has a unique maximum value, and
+	  	Cufflinks finds it with a numerical optimization algorithm.</p>
+  
+	  <p>Using this statistical method, Cufflinks can estimate the abundances of the isoforms present in the sample,
+	  either using a known "reference" annotation, 	or after an ab-initio 
+		assembly of the transcripts using only the reference genome.
+      </p>
+	  <br/>
+	
+	  <h2 id="hdis">How does Cufflinks estimate the fragment length distribution?</h2><br/>
+	  <p>
+	  The probability distribution on the length of fragments plays an important role in assembly, abundance
+	  estimation, and bias correction.  The accuracy of this distribution will have a great impact on the 
+	  accuracy of our results.  Because of this, we now attempt to "learn" this distribution from the input
+	  data instead of relying on an approximate Gaussian distribution, whenever possible.
+	  </p>
+	  <ul><li>
+	  	If only single-end reads are provided, there is no way to estimate the empirical distribution,
+	  	so Cufflinks must use an approximate Gaussian distribution with either default or user-provided
+	  	parameters (see the manual for more details).  
+	  </li></ul>
+  
+	  <ul><li>If the alignment file contains paired-end reads and an asssembly is provided, Cufflinks is able to learn the distribution
+	  from reads that map to single-isoform genes. Because the assembly provides the splicing structure, introns can be removed from
+	  between the paired reads, providing the most accurate estimation.</ul></li>
+	  
+	  
+	  <ul><li>If given paired end reads and no assembly, Cufflinks will search for large "open ranges" where the alignments contain no splices within
+	  the reads. Within these ranges, Cufflinks uses the genomic length of the paired-end reads to estimate the distribution. If not enough reads can 
+	  be found within these ranges, Cufflinks will default to the Gaussian approximation as in the single-end case. To ensure an empirical distribution
+	  will be used, one can first assemble with the Gaussian and then supply the output GTF assembly in a second run of Cufflinks.</li></ul>
+	  <br/>
+	  
+	<h2 id="hsbi">How does Cufflinks identify and correct for sequence bias?</h2><br/>
+	  <p>
+	  Often in RNA-Seq experiments, a sequence-specific bias is introduced during the 
+	  library preparation that challenges the assumption of uniform coverage. For example, 
+	  a sequence-specific bias caused by the use of random hexamers was identified in
+	  </p>
+		<br/>
+	 
+	  <ul>
+		<li>Kasper D. Hansen, Steven E. Brenner, Sandrine Dudoit,
+			<a href="http://nar.oxfordjournals.org/cgi/content/abstract/38/12/e131">Biases in Illumina transcriptome sequencing caused by random hexamer priming</a>
+			Nucleic Acids Research, Volume 38, Issue 12 (2010)
+	  </ul>
+	  <br/>
+	  
+	  <p>
+	  	Because this bias is usually caused by primers used either in PCR or reverse transcription, it appears near 
+	  	the ends of the sequenced fragments.  We have developed a method to correct this bias by “learning” what sequences 
+	  	are being selected for (or ignored) in a given experiment, and including these measurements in the abundance 
+	  	estimation.  
+	  </p>
+  
+	  <p>The first step in the process is to generate an initial abundance estimation without using bias correction.  
+	  Since different transcripts will have different sequences appear in them, we use this approximate abundance to 
+	  weight reads by the expression level of the transcript from which they arise.  This helps us avoid over-counting 
+	  sequences that may be common in the mapping data due to high expression rather than bias.</p>
+	  
+	  <p>We next revisit each fragment in the alignment file and apply the abundance weighting as we “learn” features of the 
+	  sequence in a window surrounding the 5’ and 3’ end of the transcript using a graphical model of the statistical dependencies 
+	  between bases in the window.  We keep a separate model for each end of the read since the biases in the first 
+	  and second strand synthesis of the fragment are not always the same.</p>
+	  
+	  <p>Finally, we re-estimate the abundances using a new likelihood function that has been adjusted to take the sequence 
+	  bias into account, based on the parameters of the graphical model we computed in the previous step.  The result is a 
+	  new set of FPKMs that are less affected by sequence-specific bias.</p>
+	  
+	  <p> Note that since it must know which ends of reads are fragment ends, Cufflinks will not bias correct reads mapping to transcripts
+	  with unknown strandedness.
+	  </p>
+	  <p>The full details of our method can be found in</p>
+	  		
+	  <br/><ul>
+		<li>Adam Roberts, Cole Trapnell, Julie Donaghey, John L. Rinn and Lior Pachter,
+			<a href="http://genomebiology.com/2011/12/3/R22/abstract">Improving RNA-Seq expression estimates by correcting for fragment bias</a>
+			Genome Biology, Volume 12, R22 (2011)
+	  </ul><br/>
+	  
+	  
+	  <h2 id="hmul">How does Cufflinks handle multi-mapped reads?</h2><br/>
+	  <p> Individual reads will sometimes be mapped to multiple positions in the genome due to sequence repeats and homology. 
+	  By default, Cufflinks will uniformly divide each multi-mapped read to all of the positions it maps to.  In other words,
+	  a read mapping to 10 positions will count as 10% of a read at each position.</p>
+	  <p>If multi-mapped read correction is enabled (-u/--multi-read-correct), Cufflinks will improve its estimation in a manner
+	  inspired by (but using more information than) the 'rescue' method described in</p>	
+	  <br/><ul>
+		<li>Ali Mortazavi, Brian A Williams, Kenneth McCue, Lorian Schaeffer and Barbara Wold
+			<a href="http://www.nature.com/nmeth/journal/v5/n7/abs/nmeth.1226.html">Mapping and quantifying mammalian transcriptomes by RNA-Seq</a>
+			Nature Methods, Volume 5, 621 - 628 (2008)
+	  </ul><br/>
+	  <p>Cufflinks will first calculate initial abundance estimates for all transcripts using the uniform dividing scheme.  Cufflinks will
+	  then re-estimate the abundances dividing each multi-mapped read probabalistically based on the initial abundance estimation of the genes
+	  it maps to, the inferred fragment length, and fragment bias (if bias correction is enabled).</p>
+	  <br/>
+	  
+	  <h2 id="hrga">How does Reference Annotation Based Transcript (RABT) assembly work?</h2><br/>
+	  <p>Reference annotation based assembly seeks to build upon available information about the transcriptome of
+	  an organism to find novel genes and isoforms.  When a reference GTF is provided with the -g/--GTF-guide option,
+	  the reference transcripts are tiled with faux-reads that will aid in the assembly of novel isoforms. These
+	  faux reads are combined with the sequencing reads and are input into the regular Cufflinks assembler.  The assembled
+	  transfrags are then compared to the reference transcripts to determine if they are sufficiently different to be 
+	  considered novel.  Those that are labeled novel by our criteria (see Cufflinks options to adjust the parameters)
+	  are output along with the transcripts from the annotation.
+	  <p>The use of faux-reads was inspired by the methods of</p>
+	<br/><ul>
+		<li>J Venter, M Adams, E Myers, P Li, R Mural, G Sutton, H Smith, M Yandell, C Evans, R Holt, et al.
+			<a href="http://www.sciencemag.org/content/291/5507/1304.full">The sequence of the human genome</a>
+			Science, Volume 291, 1304 - 1351 (2001)
+	  </ul><br/>
+	
+	<!-- <h2 id="mrge">How does Cuffmerge work?</h2><br/> -->
+	
+	<h2 id="diff">What is Cuffdiff?</h2><br/>
+  	<p> Cuffdiff is a program that uses the Cufflinks transcript quantification
+	engine to calculate gene and transcript expression levels in more than one condition and 
+	test them for signficant differences.  You can use it to find differentially expressed genes 
+	and transcripts, as well as genes that are being differentially <em>regulated</em> at the 
+	transcriptional and post-transcriptional level.
+	</p>
+	
+	<p>Cuffdiff is described in detail in the manuscript below:
+		<ul>
+			<li>Trapnell C, Hendrickson D,Sauvageau S, Goff L, Rinn JL, Pachter L, <a
+		                      href="http://dx.doi.org/10.1038/nbt.2450">Differential 
+							 analysis of gene regulation at transcript resolution with RNA-seq
+							</a> <br>
+		                  <i><a href="http://www.nature.com/nbt">Nature
+		                      Biotechnology</a></i> doi:10.1038/nbt.2450
+		
+		
+			 </li>
+		 </ul>
+	 </p>
+	 <br/>
+	 <h2 id="difftest">How does Cuffdiff 2 test for differentially expressed and regulated genes?</h2><br/>
+	 <p>
+		 To identify a gene or transcript as DE, Cuffdiff 2 tests the observed log-fold-change in its expression against the null hypothesis of no change (i.e. the true log-fold-change is zero).  Because measurement error, technical variability, and cross-replicate biological variability might result in an observed log-fold-change that is nonzero, Cuffdiff assesses significance using a model of variability in the log-fold-change under the null hypothesis. This model is described in detail in detail in Trapnell and Hendrickson et al. Briefly, Cuffdiff two constructs, for each condition, a table that predicts how much variance there is in the number of reads originating from a gene or transcript.  The table is keyed by the average reads across replicates, so to look up the variance for a transcript using the table, Cuffdiff estimates how many reads originated from that transcript, and then queries the table to retrieve the variance for that number of reads.  Cuffdiff 2 then accounts for read mapping and assignment uncertainty by simulating probabilistic assignment of the reads mapping to a locus to the splice isoforms for that locus. At the end of the estimation procedure, Cuffdiff 2 obtains an estimate of the number of reads that originated from each gene and transcript, along with variances in those estimates.  The read counts are reported along with FPKM values and their variances.  Change in expression is reported as the log fold change in FPKM, and the FPKM variances allow the program to estimate the variance in the log-fold-change itself.  Naturally, a gene that has highly variable expression will have a highly variable log-fold-change between two conditions. 
+	 </p>
+	 <br/>
+	 <h2 id="diffdiff">What's changed since the paper?</h2><br/>
+	 <p>Numerous small changes, bugfixes, and minor features have appeared since version 2.0.2 of Cuffdiff (which was used for Trapnell and Hendrickson et al).  There are also two more substantial changes:
+		 <p> The first change is that Cuffdiff now reports the FPKM for each condition as the average FPKM calculated for each individual replicate.  Previous versions pooled the reads from all replicates of a condition together and computed FPKM for each gene and transcript from the pool.  The two approaches yield extremely similar values, but the new method is faster and simpler, and will make implementing several planned features much easier. 
+	 <p>
+		 The second change is that Cuffdiff 2.1 introduced a new testing method that substantially improves performance over previous releases, including the one used for the paper. The modifications made in Cuffdiff 2.1 improve sensitivity in calling differentially expressed (DE) genes and transcripts while maintaining a low false positive rate.  They stem from the method used to calculate the variability in the log fold change in expression.  In Trapnell et al, Cuffdiff 2 used the “delta method” to estimate the variance of the log fold change estimate for a gene or transcript. This method yields a simple equation that takes as input the mean and variance of the transcript’s expression in two conditions and produces a variance for the log fold change.  However, the equation contains no explicit accounting for the number of replicates used to produce those estimates – they are assumed to be perfectly accurate. The equation also assumes that the distribution of log fold changes (after a particular transformation) is approximately normal.  For most genes and transcripts, this approximation is a good one.  However, for the remaining genes and transcripts, Cuffdiff 2 sometimes failed to detect a signficant change in expression.
+	 <p>
+		 The improved version of Cuffdiff 2 more accurately estimates the variance in the log-fold-change using simulated draws from the model of variance in expression for each of the two conditions.  Imagine an experiment that has <em>n</em> replicates in condition <em>A</em> and <em>m</em> replicates in condition <em>B</em>. To estimate the distribution of the log-fold-change in expression for a gene <em>G</em> under the null hypothesis, Cuffdiff first draws <em>n</em> times from the distribution of expression of <em>G</em> according to the algorithm’s model of expression.  Cuffdiff then takes the average of the <em>n</em> draws to obtain an expression “measurement”. Then, Cuffdiff draws <em>m</em> from the same distribution and again takes their average.    Cuffdiff then takes the log ratio of these averages, places this value in a list, and then repeats the procedure until there are thousands of such log-fold-change samples in the list.  The software then makes a similar list, this time using the expression model for condition <em>B</em> – the null hypothesis assumes both sets of replicates originate from the same condition, but we do not know whether <em>A</em> or <em>B</em> is the better representative of that condition, so we must draw samples from both and combine them.   To calculate a <em>p</em>-value of observing the real log-fold-change under this null model, we simply sort all the samples and count how many of them are more extreme than the log fold change we actually saw in the real data.  This number divided by the total number of draws is our estimate for the <em>p</em>-value.
+	<p>	 
+		 Cuffdiff 2 reports not only genes and transcripts that are significantly DE between conditions, but also groups of transcripts (i.e. the isoforms of a gene) that show significant changes in expression relative to one another.  The test for this is similar to what is described in Trapnell et al, but comparably modified along the lines described above for single genes or transcripts.  Draws of expression are made for each transcript in a group according to the number of replicates in the experiment.  These are averaged, and the shift in relative transcript abundance for the draw is made using the Jensen-Shannon metric.  These draws are added to a list and used to calculate <em>p</em>-values for significance of observed shifts in relative abundance under the null hypothesis.
+		 
+	 <br/>
+  </div>
+  <div id="footer">
+  	<table width="100%" cellspacing=15><tr><td>
+    This research was supported in part by NIH grants R01-LM06845 and R01-GM083873, NSF grant CCF-0347992 and the Miller Institute for Basic
+		Research in Science at UC Berkeley.
+    </td><td align=right>
+    Administrator: <a href="mailto:cole@cs.umd.edu">Cole Trapnell</a>. Design by <a href="http://www.free-css-templates.com" title="Design by David Herreman">David Herreman</a>
+    </td></tr></table>
+  </div>
+</div>
+
+<!-- Google analytics code -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-6101038-2");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<!-- End Google analytics code -->
+</body>
+</html>
