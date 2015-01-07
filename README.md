@@ -1,7 +1,7 @@
 ![image](https://cloud.githubusercontent.com/assets/3611756/5643160/a8574d64-9609-11e4-9abb-f5ee60779fa0.png)
 
-Toolbox
-=======
+Pandora's Toolbox
+=================
 
 A collection of well-known bioinformatics programs in one place. The collection is available under GPL V3.0 license, but some of the individual codes may have more permissive licenses.  
 
