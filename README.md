@@ -11,10 +11,10 @@ Samtools
 https://github.com/samtools
 
 
-HMMEST
+HMMER
 ======
 
-Same as Sean Eddy's HMMER, but was forced to change name for legal reason.
+
 
 
 KMC - kmer counter
