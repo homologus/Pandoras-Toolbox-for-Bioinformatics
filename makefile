@@ -1,7 +1,7 @@
 BCALM_BIN_DIR = bin/bcalm
 BWA_BIN_DIR=bin/bwa
 DALIGNER_BIN_DIR=bin/daligner
-HMMEST_BIN_DIR = bin/hmmest
+HMMER_BIN_DIR = bin/hmmer
 KMC_BIN_DIR = bin/kmc
 MINIA_BIN_DIR=bin/minia
 SAMTOOLS_BIN_DIR=bin/samtools
@@ -21,13 +21,13 @@ CHRYSALIS_FILES=chrysalis.notes QuantifyGraph GraphFromFasta ReadsToComponents.p
 
 all: 
 	-rm -rf bin
-	-mkdir -p $(BCALM_BIN_DIR) $(BWA_BIN_DIR) $(DALIGNER_BIN_DIR) $(DALIGNER_BIN_DIR)/Daligner $(DALIGNER_BIN_DIR)/db $(HMMEST_BIN_DIR) $(KMC_BIN_DIR) $(MINIA_BIN_DIR) $(SAMTOOLS_BIN_DIR) $(SOAP_BIN_DIR) $(RAPSEARCH_BIN_DIR) $(SPADES_BIN_DIR) $(TRINITY_BIN_DIR) $(SAILFISH_BIN_DIR)  $(TRINITY_BIN_DIR)/Inchworm $(TRINITY_BIN_DIR)/Chrysalis $(TRINITY_BIN_DIR)/Butterfly $(TRINITY_BIN_DIR)/Inchworm/bin $(TOPHAT_BIN_DIR) $(CUFFLINK_BIN_DIR)
+	-mkdir -p $(BCALM_BIN_DIR) $(BWA_BIN_DIR) $(DALIGNER_BIN_DIR) $(DALIGNER_BIN_DIR)/Daligner $(DALIGNER_BIN_DIR)/db $(HMMER_BIN_DIR) $(KMC_BIN_DIR) $(MINIA_BIN_DIR) $(SAMTOOLS_BIN_DIR) $(SOAP_BIN_DIR) $(RAPSEARCH_BIN_DIR) $(SPADES_BIN_DIR) $(TRINITY_BIN_DIR) $(SAILFISH_BIN_DIR)  $(TRINITY_BIN_DIR)/Inchworm $(TRINITY_BIN_DIR)/Chrysalis $(TRINITY_BIN_DIR)/Butterfly $(TRINITY_BIN_DIR)/Inchworm/bin $(TOPHAT_BIN_DIR) $(CUFFLINK_BIN_DIR)
 
 	cd src/bcalm && make && cp bcalm ../../$(BCALM_BIN_DIR)
 	cd src/bwa && make && cp bwa ../../$(BWA_BIN_DIR)
 	cd src/DALIGNER/DALIGNER && make  && cp $(DALIGNER_FILES) ../../../$(DALIGNER_BIN_DIR)/Daligner 
 	cd src/DALIGNER/DAZZ_DB && make && cp $(DAZZ_FILES) ../../../$(DALIGNER_BIN_DIR)/db
-	cd src/HMMEST && ./configure && make && cd src && cp $(HMM_FILES) ../../../$(HMMEST_BIN_DIR) 
+	cd src/HMMER && ./configure && make && cd src && cp $(HMM_FILES) ../../../$(HMMER_BIN_DIR) 
 	cd src/KMC && make && cp bin/* ../../$(KMC_BIN_DIR)
 	cd src/Minia && make  && cp minia ../../$(MINIA_BIN_DIR)
 	cd src/RAPSearch2 && rm -f boost lib*a && make clean && ln -s ../../boost_1_55_0/boost boost && ln -s ../../boost_1_55_0/stage/lib/libboost_chrono.a libboost_chrono.a && ln -s ../../boost_1_55_0/stage/lib/libboost_serialization.a libboost_serialization.a && ln -s ../../boost_1_55_0/stage/lib/libboost_system.a libboost_system.a && ln -s ../../boost_1_55_0/stage/lib/libboost_thread.a libboost_thread.a && make && cp *search ../../$(RAPSEARCH_BIN_DIR)
@@ -48,6 +48,7 @@ clean:
 	cd src/bwa && make clean
 	cd src/DALIGNER/DALIGNER && make clean
 	cd src/DALIGNER/DAZZ_DB && make clean
+	cd src/HMMER && make clean
 	cd src/KMC && make clean
 	cd src/Minia && make clean
 	cd src/RAPSearch2 && make clean 
