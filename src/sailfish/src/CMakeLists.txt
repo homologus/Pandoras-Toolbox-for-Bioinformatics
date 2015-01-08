@@ -2,8 +2,36 @@ set ( SAILFISH_MAIN_SRCS
 Sailfish.cpp
 )
 
+#add_custom_command ( OUTPUT QSufSort.c COMMAND touch QSufSort.c)
+#add_custom_command ( OUTPUT is.c COMMAND touch is.c)
+#add_custom_command ( OUTPUT bwt_gen.c COMMAND touch bwt_gen.c)
+#add_custom_command ( OUTPUT bwtindex.c COMMAND touch bwtindex.c)
+
+set ( SALMON_MAIN_SRCS
+QSufSort.c
+is.c
+bwt_gen.c
+bwtindex.c
+#FragmentList.cpp
+Salmon.cpp
+BuildSalmonIndex.cpp
+SalmonQuantify.cpp
+FragmentLengthDistribution.cpp 
+SalmonUtils.cpp
+StadenUtils.cpp
+)
+
 set (BUILD_TRANSCRIPT_MAP_SRCS
 BuildTranscriptMap.cpp
+)
+
+set (SALMON_ALIGN_SRCS
+FASTAParser.cpp 
+#SailfishStringUtils.cpp 
+#LibraryFormat.cpp 
+ErrorModel.cpp 
+FragmentLengthDistribution.cpp 
+SalmonQuantifyAlignments.cpp 
 )
 
 # Build the specific Sailfish commands as a 
@@ -21,18 +49,24 @@ GenomicFeature.cpp
 JellyfishMerCounter.cpp
 VersionChecker.cpp
 SailfishUtils.cpp
+SailfishStringUtils.cpp
 ComputeBiasFeatures.cpp
 PerformBiasCorrection.cpp
 PartitionRefiner.cpp
 StreamingSequenceParser.cpp
 cokus.cpp
+merge_files.cc
+format.cc
 )
 
 include_directories( 
 ${GAT_SOURCE_DIR}/include
 ${GAT_SOURCE_DIR}/external
+${GAT_SOURCE_DIR}/external/cereal/include
 ${GAT_SOURCE_DIR}/external/install/include
-${GAT_SOURCE_DIR}/external/install/include/jellyfish-1.1.10
+${GAT_SOURCE_DIR}/external/install/include/jellyfish-2.1.3
+${GAT_SOURCE_DIR}/external/install/include/bwa
+#${GAT_SOURCE_DIR}/external/install/include/clasp
 ${ZLIB_INCLUDE_DIR}
 ${TBB_INCLUDE_DIRS}
 ${Boost_INCLUDE_DIRS}
@@ -47,51 +81,143 @@ ${LAPACK_LIBRARY_DIR}
 ${BLAS_LIBRARY_DIR}
 )
 
-if(HAVE_LOGGER)
-    set (LOGGING_LIBS lib_g2logger_shared)
-else()
-    set (LOGGING_LIBS )
-endif()
 #dd_library(pca SHARED ${PCA_LIB_SRCS})
 
 message("TBB_LIBRARIES = ${TBB_LIBRARIES}")
 message("Boost_LIBRARIES = ${Boost_LIBRARIES}")
 
+# Set the RPATH 
+if (APPLE)
+    ## This DOES NOT do what I / any one sane, expects.  Setting the 
+    ## linker path on OSX is messed up.  Just tell the user to use 
+    ## DYLD_FALLBACK_LIBRARY_PATH for now
+    set(CMAKE_INSTALL_RPATH "@executable_path/../lib:@executable_path/../../lib:@executable_path/")
+else()
+    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib:$ORIGIN/../../lib:$ORIGIN/")
+endif()
+
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+
 # Build the Sailfish library
-add_library(sailfish_core SHARED ${SAILFISH_LIB_SRCS} )
+add_library(sailfish_core STATIC ${SAILFISH_LIB_SRCS} )
+
 # Build the Sailfish executable
 add_executable(sailfish ${SAILFISH_MAIN_SRCS})
 
-add_executable(build_transcript_map ${BUILD_TRANSCRIPT_MAP_SRCS})
+# Build the salmon executable
+add_executable(salmon ${SALMON_MAIN_SRCS} ${SALMON_ALIGN_SRCS})
 
-target_link_libraries(build_transcript_map
-  sailfish_core
-  ${Boost_LIBRARIES}
-  ${ZLIB_LIBRARY}
-  cmph
-  jellyfish-1.1
-  pthread
-  gomp
-  m
-  ${TBB_LIBRARIES}
-  ${LOGGING_LIBS}
-  ${LIBSAILFISH_LINKER_FLAGS} shark
-)
-   
+#add_executable(salmon-read ${SALMON_READ_SRCS})
+#set_target_properties(salmon-read PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_LIBPTHREAD -D_PBGZF_USE -fopenmp"
+#    LINK_FLAGS "-DHAVE_LIBPTHREAD -D_PBGZF_USE -fopenmp")
+
+#set_target_properties(sailfish_core sailfish salmon PROPERTIES LINK_SEARCH_END_STATIC TRUE)
+
 # Link the executable
 target_link_libraries(sailfish 
     sailfish_core 
     ${Boost_LIBRARIES} 
+    gff
     ${ZLIB_LIBRARY} 
-    cmph # perfect hashing library
-    jellyfish-1.1 
-    pthread 
-    gomp 
+    ${GAT_SOURCE_DIR}/external/install/lib/libcmph.a # perfect hashing library
+    ${GAT_SOURCE_DIR}/external/install/lib/libjellyfish-2.0.a 
     m
     ${TBB_LIBRARIES}
-    ${LOGGING_LIBS}
     ${LIBSAILFISH_LINKER_FLAGS} shark
+    ${NON_APPLECLANG_LIBS}
+    ${TCMALLOC_LIB}
+    pthread
 )
+
+# Link the executable
+target_link_libraries(salmon
+    sailfish_core 
+    gff
+    ${Boost_LIBRARIES} 
+    ${GAT_SOURCE_DIR}/external/install/lib/libstaden-read.a
+    ${ZLIB_LIBRARY} 
+    ${GAT_SOURCE_DIR}/external/install/lib/libcmph.a # perfect hashing library
+    ${GAT_SOURCE_DIR}/external/install/lib/libjellyfish-2.0.a 
+    ${GAT_SOURCE_DIR}/external/install/lib/libbwa.a
+    m
+    lzma 
+    bz2
+    ${TBB_LIBRARIES}
+    ${LIBSAILFISH_LINKER_FLAGS} shark
+    ${NON_APPLECLANG_LIBS}
+    ${TCMALLOC_LIB}
+    pthread
+)
+
+add_dependencies(salmon libbwa)
+
+# Link the executable
+#target_link_libraries(salmon-read
+    #sailfish_core
+    #gff
+    #${Boost_LIBRARIES} 
+    #${ZLIB_LIBRARY} 
+    #cmph # perfect hashing library
+    #jellyfish-2.0 
+    #${CMAKE_SOURCE_DIR}/external/install/lib/libbam.a
+    #hts
+    #z
+    #pthread 
+    #gomp 
+    #m
+    #${TBB_LIBRARIES}
+    #${LIBSAILFISH_LINKER_FLAGS} shark
+#)
+
+##### ======================================
+
+#add_executable(build_transcript_map ${BUILD_TRANSCRIPT_MAP_SRCS})
+
+#target_link_libraries(build_transcript_map
+  #sailfish_core
+  #${Boost_LIBRARIES}
+  #${ZLIB_LIBRARY}
+  #cmph
+  #jellyfish-2.0
+  #pthread
+  #gomp
+  #m
+  #${TBB_LIBRARIES}
+  #${LIBSAILFISH_LINKER_FLAGS} shark
+#)
+   
+
+
+#add_executable(read_hit_tester ReadHitTester.cpp)
+#target_link_libraries(read_hit_tester
+    #sailfish_core 
+    #gff
+    #${Boost_LIBRARIES} 
+    #${ZLIB_LIBRARY} 
+    #cmph # perfect hashing library
+    #jellyfish-2.0 
+    #pthread 
+    #gomp 
+    #m
+    #${TBB_LIBRARIES}
+    #${LIBSAILFISH_LINKER_FLAGS} shark
+#)
+
+#add_executable(BuildKmerLocationIndex BuildKmerLocationIndex.cpp)
+#target_link_libraries(BuildKmerLocationIndex
+    #sailfish_core 
+    #gff
+    #${Boost_LIBRARIES} 
+    #${ZLIB_LIBRARY} 
+    #cmph # perfect hashing library
+    #jellyfish-2.0 
+    #pthread 
+    #gomp 
+    #m
+    #${TBB_LIBRARIES}
+    #${LIBSAILFISH_LINKER_FLAGS} shark
+#)
+
 
 #
 #add_executable(performBiasCorrection BiasCorrectionDriver.cpp)
@@ -100,7 +226,7 @@ target_link_libraries(sailfish
 #${Boost_LIBRARIES}
 #${ZLIB_LIBRARY}
 #cmph
-#jellyfish-1.1
+#jellyfish-2.0
 #pthread
 #gomp
 #m
@@ -108,26 +234,26 @@ target_link_libraries(sailfish
 #shark
 #)
 
-add_executable(analyze_kmer_tradeoff AnalyzeKmerTradeoff.cpp)
-target_link_libraries(analyze_kmer_tradeoff 
-    sailfish_core 
-    ${Boost_LIBRARIES} 
-    ${ZLIB_LIBRARY} 
-    cmph # perfect hashing library
-    jellyfish-1.1 
-    pthread 
-    gomp 
-    m
-    ${LOGGING_LIBS}
-    ${TBB_LIBRARIES}
-    shark
-)
+
+#add_executable(analyze_kmer_tradeoff AnalyzeKmerTradeoff.cpp)
+#target_link_libraries(analyze_kmer_tradeoff 
+    #sailfish_core 
+    #${Boost_LIBRARIES} 
+    #${ZLIB_LIBRARY} 
+    #cmph # perfect hashing library
+    #jellyfish-2.0 
+    #pthread 
+    #gomp 
+    #m
+    #${TBB_LIBRARIES}
+    #shark
+#)
 
 # add_executable(compute_transcript_features ComputeBiasFeatures.cpp)
 # target_link_libraries(compute_transcript_features
 # ${Boost_LIBRARIES}
 # ${ZLIB_LIBRARY}
-# jellyfish-1.1
+# jellyfish-2.0
 # pthread
 # gomp
 # m
@@ -143,7 +269,6 @@ target_link_libraries(analyze_kmer_tradeoff
 # m
 # shark # The machine learning library
 # )
-
 
 IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   SET(CMAKE_INSTALL_PREFIX
@@ -163,7 +288,7 @@ install(DIRECTORY
 # install(FILES ${Boost_LIBRARIES}
 # 	           DESTINATION ${INSTALL_LIB_DIR})
 
-install(TARGETS sailfish sailfish_core
+install(TARGETS salmon sailfish sailfish_core
                 RUNTIME DESTINATION bin 
                 LIBRARY DESTINATION lib
                 ARCHIVE DESTINATION lib
@@ -186,6 +311,7 @@ install(
 
 include(InstallRequiredSystemLibraries)
 add_test( NAME simple_test COMMAND ${CMAKE_COMMAND} -DTOPLEVEL_DIR=${GAT_SOURCE_DIR} -P ${GAT_SOURCE_DIR}/cmake/SimpleTest.cmake )
+add_test( NAME salmon_read_test COMMAND ${CMAKE_COMMAND} -DTOPLEVEL_DIR=${GAT_SOURCE_DIR} -P ${GAT_SOURCE_DIR}/cmake/TestSalmon.cmake )
 
 ####
 #
@@ -225,7 +351,7 @@ add_test( NAME simple_test COMMAND ${CMAKE_COMMAND} -DTOPLEVEL_DIR=${GAT_SOURCE_
 # target_link_libraries( BuildLUT 
 # 	${Boost_LIBRARIES} ${ZLIB_LIBRARY} 
 # 	cmph # perfect hashing library
-# 	jellyfish-1.1 pthread 
+# 	jellyfish-2.0 pthread 
 #     gomp lib_activeobject lib_g2logger m tbb)
 
 # INSTALL(TARGETS BuildLUT DESTINATION ${PROJECT_SOURCE_DIR}/bin COMPONENT comp_buildlut)

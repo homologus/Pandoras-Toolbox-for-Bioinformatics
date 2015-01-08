@@ -60,4 +60,4 @@ clean:
 	cd src/SPAdes && rm -rf build_spades
 	cd src/Trinity && make clean
 	cd src/tophat && make clean
-	cd src/cufflinks && make clean
+#	cd src/cufflinks && make clean

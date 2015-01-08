@@ -51,11 +51,10 @@ private:
 
         _genesToTranscripts.resize( _geneNames.size(), {});
 
-        Index geneID;
         Index transcriptID = 0;
         size_t maxNumTrans = 0;
         Index maxGene;
-        for ( size_t transcriptID = 0; transcriptID < _transcriptsToGenes.size(); ++transcriptID ) {
+        for ( transcriptID = 0; transcriptID < _transcriptsToGenes.size(); ++transcriptID ) {
             _genesToTranscripts[ _transcriptsToGenes[transcriptID] ].push_back( transcriptID );
             if ( maxNumTrans < _genesToTranscripts[ _transcriptsToGenes[transcriptID] ].size() ) {
                 maxNumTrans = _genesToTranscripts[ _transcriptsToGenes[transcriptID] ].size();
@@ -89,6 +88,9 @@ public:
         _transcriptNames(transcriptNames), _geneNames(geneNames),
         _transcriptsToGenes(transcriptsToGenes), _haveReverseMap(false) {}
 
+
+    TranscriptGeneMap(const TranscriptGeneMap& other) = default;
+    TranscriptGeneMap& operator=(const TranscriptGeneMap& other) = default;
 
 
     Index INVALID { std::numeric_limits<Index>::max() };
@@ -129,6 +131,19 @@ public:
     inline std::string geneName( Index transcriptID ) {
         return _geneNames[_transcriptsToGenes[transcriptID]];
     }
+    inline std::string geneName (const std::string& transcriptName,
+                                 bool complain=true) {
+        auto tid = findTranscriptID(transcriptName);
+        if (tid != INVALID) {
+            return geneName(tid);
+        } else {
+            std::cerr << "WARNING: couldn't find transcript named ["
+                      << transcriptName << "]; returning transcript "
+                      << " as it's own gene\n";
+            return transcriptName;
+        }
+    }
+
     inline std::string transcriptName( Index transcriptID ) {
         return _transcriptNames[transcriptID];
     }

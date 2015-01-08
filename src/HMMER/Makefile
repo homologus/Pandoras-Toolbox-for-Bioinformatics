@@ -160,8 +160,8 @@ clean:
 	${QUIET_SUBDIR0}src           ${QUIET_SUBDIR1} clean
 	${QUIET_SUBDIR0}profmark      ${QUIET_SUBDIR1} clean
 	${QUIET_SUBDIR0}testsuite     ${QUIET_SUBDIR1} clean
-	${QUIET_SUBDIR0}documentation ${QUIET_SUBDIR1} clean
-	${QUIET_SUBDIR0}${ESLDIR}     ${QUIET_SUBDIR1} clean
+#	${QUIET_SUBDIR0}documentation ${QUIET_SUBDIR1} clean
+#	${QUIET_SUBDIR0}${ESLDIR}     ${QUIET_SUBDIR1} clean
 	${QUIET_SUBDIR0}${SADIR}      ${QUIET_SUBDIR1} clean
 	-rm -f *.o *~ Makefile.bak core TAGS gmon.out
 
@@ -171,8 +171,8 @@ distclean:
 	${QUIET_SUBDIR0}src           ${QUIET_SUBDIR1} distclean
 	${QUIET_SUBDIR0}profmark      ${QUIET_SUBDIR1} distclean
 	${QUIET_SUBDIR0}testsuite     ${QUIET_SUBDIR1} distclean
-	${QUIET_SUBDIR0}documentation ${QUIET_SUBDIR1} distclean
-	${QUIET_SUBDIR0}${ESLDIR}     ${QUIET_SUBDIR1} distclean
+#	${QUIET_SUBDIR0}documentation ${QUIET_SUBDIR1} distclean
+#	${QUIET_SUBDIR0}${ESLDIR}     ${QUIET_SUBDIR1} distclean
 	${QUIET_SUBDIR0}${SADIR}      ${QUIET_SUBDIR1} distclean
 	-rm config.log config.status
 	-rm -rf autom4te.cache

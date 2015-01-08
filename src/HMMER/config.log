@@ -308,7 +308,7 @@ configure: failed program was:
 configure:3574: result: no
 configure:3446: checking whether pthreads work without any flags
 configure:3544: gcc -o conftest -g -O2    conftest.c   >&5
-/tmp/ccQ1UdRK.o: In function `main':
+/tmp/ccBjdG9O.o: In function `main':
 /home/msamanta/Toolboxes/Pandoras-Toolbox/src/HMMER/conftest.c:23: undefined reference to `pthread_join'
 /home/msamanta/Toolboxes/Pandoras-Toolbox/src/HMMER/conftest.c:24: undefined reference to `__pthread_register_cancel'
 /home/msamanta/Toolboxes/Pandoras-Toolbox/src/HMMER/conftest.c:25: undefined reference to `pthread_create'
@@ -749,7 +749,7 @@ configure:6443: gcc -std=gnu99 -o conftest -O3 -fomit-frame-pointer -fstrict-ali
 configure:6447: $? = 0
 configure:6453: ./conftest
 configure:6457: $? = 0
-configure:6474: result: 206f2:82400800:2bee3ff:bfebfbff
+configure:6474: result: 206f2:c2400800:2bee3ff:bfebfbff
 configure:6719: checking whether C compiler accepts -march=pentiumpro
 configure:6744: gcc -std=gnu99 -c -march=pentiumpro  conftest.c >&5
 conftest.c:1:0: error: CPU you selected does not support x86-64 instruction set
@@ -1375,7 +1375,7 @@ ax_cv_c_flags__mpentiumpro=no
 ax_cv_c_flags__msse2=yes
 ax_cv_gcc_archflag=unknown
 ax_cv_gcc_x86_cpuid_0=b:756e6547:6c65746e:49656e69
-ax_cv_gcc_x86_cpuid_1=206f2:82400800:2bee3ff:bfebfbff
+ax_cv_gcc_x86_cpuid_1=206f2:c2400800:2bee3ff:bfebfbff
 
 ## ----------------- ##
 ## Output variables. ##
