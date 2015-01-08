@@ -5,7 +5,11 @@ Pandora's Toolbox
 
 License – GNU GPL3
 
-Condition for use - Please do NOT cite Pandora's Toolbox. Instead cite papers from authors, whose programs you are using. Those links are given below.
+
+Condition for use
+=================
+
+Please do NOT cite Pandora's Toolbox. Instead cite papers from individual authors, whose programs you are using. Those links are given below.
 
 
 Description
