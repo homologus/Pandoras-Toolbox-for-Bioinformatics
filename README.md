@@ -26,167 +26,119 @@ The following programs are included in the current version. Please DO NOT cite u
 1. KMC2
 ========
 
-KMC2 is an efficient kmer counter that uses minimizers.
+KMC2 is an efficient kmer-counter that does not require significant RAM. It is disk-based and uses a minimizer-like method to partition the reads.
 
-Cite -
+1.  Deorowicz, S., Kokot, M., Grabowski, Sz., Debudaj-Grabysz, A., KMC 2: Fast and resource-frugal k-mer counting, Bioinformatics, 2015.
 
-<A href=http://arxiv.org/abs/1407.1507>KMC 2: Fast and resource-frugal k-mer counting - Sebastian Deorowicz, Marek Kokot, Szymon Grabowski, Agnieszka Debudaj-Grabysz</A>
-
-http://sun.aei.polsl.pl/kmc/
-http://sun.aei.polsl.pl/kmc/download/kmc.tar.gz
-
-**** License *****
-* KMC software distributed under GNU GPL 2 licence.
-
-* libbzip2 is open-source (BSD-style license)
-
-* gzip is free, open-source
-
-* asmlib is under the licence GNU GPL 3 or higher
-
-* Boost is under Boost Software License (free, open-source), see http://www.boost.org/users/license.html.
-
-In case of doubt, please consult the original documentations.
+2. Deorowicz, S., Debudaj-Grabysz, A., Grabowski, Sz., Disk-based k-mer counting on a PC, BMC Bioinformatics, 2013; 14():Article no. 160.
 
 
-2. bwa (included BWAMEM)
+2. BWA and BWA-MEM
 ============================
 
-BWA is a short read aligner.
+BWA-MEM searches for given short and long reads within an existing sequence or collection of sequences. For example, it can be used to find matches of millions of short reads in the human genome.
 
-Cite -
-<A href=http://arxiv.org/abs/1303.3997>Aligning sequence reads, clone sequences and assembly contigs with BWA-MEM - Heng Li</A>
-
-https://github.com/lh3/bwa
+1. [Aligning sequence reads, clone sequences and assembly contigs with BWA-MEM. Heng Li (2013).](http://arxiv.org/abs/1303.3997)
 
 
 3. DALIGNER
 ============
 
-DALIGNER is an aligner for long noisy reads.
+DALIGNER finds overlaps between long noisy reads with extensive amount of insertion-deletion errors.
 
-Cite Gene Myers, WABI 2014.
-
-https://github.com/thegenemyers
-
-DALIGNER - Find all significant local alignments between reads
-DEXTRACTOR -
-DAZZ_DB	- The Dazzler Data Base
+Eugene Myers, WABI 2014 (Workshop on Algorithms in Bioinformatics), Sept 8-10, Wroclaw, Poland.
 
 
 4. HMMER3
 ==========
 
-Cite  –
+HMMER is a sensitive nucleotide and protein search program. It uses hidden Markov model.
 
-<A href=http://www.ploscompbiol.org/article/info%3Adoi%2F10.1371%2Fjournal.pcbi.1002195>Accelerated Profile HMM Searches - Sean R. Eddy</A>
-
+1. Accelerated profile HMM searches.  S. R. Eddy.  PLoS Comp. Biol., 7:e1002195, 2011.
 
 
 5. bcalm – de Bruijn graph compressor
 =====================================
 
-This code compresses kmers into dBG using Minimizers. BCALM's license is BSD with Attribution. 
-In informal words, any use is permitted as long as it acknowledges the original authors.
+Splitting the short reads into k-mers and building the de Bruijn graph structure is usually the first step of assembly for de Bruijn graph-based algorithms. This step is often very memory intensive. A compressed de Bruijn graph combines contiguous k-mers into longer sequences and can be held with less memory. BCALM is a memory-efficient program to generate compressed de Bruijn graph from a collection of k-mers.
 
-Cite -
-
-<A href=http://arxiv.org/abs/1401.5383>On the representation of de Bruijn graphs - Rayan Chikhi, Antoine Limasset, Shaun Jackman, Jared Simpson, Paul Medvedev</A>
-
-https://github.com/Malfoy/bcalm
-
-
+1.	[On the representation of de Bruijn graphs, Rayan Chikhi et al. (2014)](http://arxiv.org/abs/1401.5383).
 
 6. Minia – assembler
 =====================
 
-inia is a short-read assembler based on a de Bruijn graph, capable of assembling a human genome on a desktop computer in a day. The output of Minia is a set of contigs. Minia produces results of similar contiguity and accuracy to other de Bruijn assemblers (e.g. Velvet).
+Minia is a contig assembler for short reads. It uses very low amount of memory, such as less than 4GB to assemble the human genome.
 
+1. R. Chikhi, G. Rizk. Space-efficient and exact de Bruijn graph representation based on a Bloom filter, WABI 2012.
 
-Cite -
-
-R. Chikhi, G. Rizk. Space-efficient and exact de Bruijn graph representation based on a Bloom filter, WABI 2012
-
-@inproceedings{minia,
- author = {Chikhi, Rayan and Rizk, Guillaume},
- title = {Space-Efficient and Exact de Bruijn Graph Representation Based on a Bloom Filter.},
- booktitle = {WABI},
- pages = {236-248},
- publisher = {Springer},
- series = {Lecture Notes in Computer Science},
- volume = 7534,
- year = 2012
-} 
-
-https://gatb.inria.fr/
-
-
+2. K. Salikhov, G. Sacomoto and G. Kucherov. Using cascading Bloom filters to improve the memory usage for de Brujin graphs, WABI 2013.
 
 7. samtools – NGS data handling
 ===============================
 
-Cite Heng Li.
+Samtools is useful for processing short-read alignment data.
 
 https://github.com/samtools
-
 
 8. SOAPdenovo2 – genome assembler
 =================================
 
-Cite Luo et al.
+SOAPdenovo uses de Bruijn graph-based algorithms to assemble large eukaryotic genomes from short read libraries.
 
-GPL3.0 license.
+1. [De novo assembly of human genomes with massively parallel short read sequencing. R. Li et al. Genome Res 20, 265-72 (2010).](http://www.ncbi.nlm.nih.gov/pubmed/20019144)
 
-http://softlayer-dal.dl.sourceforge.net/project/soapdenovotrans/SOAPdenovo-Trans/src/v1.04/SOAPdenovo-Trans-src-v1.04.zip
+2. [SOAPdenovo2: an empirically improved memory-efficient short-read de novo assembler R. Luo et al. GIGAscience (2012).](http://www.gigasciencejournal.com/content/1/1/18)
+
 
 9. SOAPdenovo-trans – transcriptome assembler
 =============================================
 
-Cite Xie et al.
+SOAPdenovo-trans assembles short reads of RNAseq experiments into transcripts.
 
+1. [SOAPdenovo-Trans: De novo transcriptome assembly with short RNA-Seq reads, Yinlong Xie et al. (2014).](http://arxiv.org/ftp/arxiv/papers/1305/1305.6760.pdf)
 
 10. SPAdes – genome assembler
 =============================
 
-Cite the SPAdes team.
+SPAdes, developed by Algorithmic Biology lab in Saint Petersburg, Russsia is among the most efficient and versatile genome assemblers that uses de Bruijn graphs. SPAdes was originally designed to assemble single-celled bacterial genomes, but it appears to work well for multi-cell data, as well as small to mid-sized eukaryotic genomes.
 
-http://bioinf.spbau.ru/en/spades
-
-http://bioinf.spbau.ru/en/content/spades-download-0
+1. Anton Bankevich, Sergey Nurk, Dmitry Antipov, Alexey A. Gurevich, Mikhail Dvorkin, Alexander S. Kulikov, Valery M. Lesin, Sergey I. Nikolenko, Son Pham, Andrey D. Prjibelski, Alexey V. Pyshkin, Alexander V. Sirotkin, Nikolay Vyahhi, Glenn Tesler, Max A. Alekseyev, and Pavel A. Pevzner. SPAdes: A New Genome Assembly Algorithm and Its Applications to Single-Cell Sequencing. Journal of Computational Biology 19(5) (2012), 455-477. doi:10.1089/cmb.2012.0021
 
 
 11. Trinity – transcriptome assembler
 =====================================
 
-Cite Grabher et al.
+Trinity is a stand alone *de novo* transcriptome assembler that uses de Bruijn graph-based algorithms.
 
-http://trinityrnaseq.sourceforge.net/
-
-http://sourceforge.net/projects/trinityrnaseq/files/
-http://hivelocity.dl.sourceforge.net/project/trinityrnaseq/trinityrnaseq_r20140717.tar.gz
+1.  [Full-length transcriptome assembly from RNA-Seq data without a reference genome, Manfred G Grabherr et al. Nature Biotechnology 29, 644.652 (2011)](http://www.nature.com/nbt/journal/v29/n7/full/nbt.1883.html)
 
 
 12. sailfish – RNAseq expression analysis
 ==========================================
 
-Cite Rob Patro et al..
-[We are still working on compilation of this code.]
+Sailfish is a lightweight program for quantifying the abundance of previously annotated RNA isoforms in RNAseq data.
 
-http://www.cs.cmu.edu/~ckingsf/software/sailfish/
-
-https://github.com/kingsfordgroup/sailfish
+1. [Sailfish enables alignment-free isoform quantification from RNA-seq reads using lightweight algorithms,  Rob Patro, Stephen M Mount	& Carl Kingsford, Nature Biotechnology 32, 462-464 (2014).](http://www.nature.com/nbt/journal/v32/n5/abs/nbt.2862.html) 
 
 
 13. RAPSearch2
 ===============
 
+RAPsearch2 searches for matches to a protein sequences in a database of sequences. It is 80x faster than BLAST without significant loss of quality.
 
-14. Tophat
+1. [Yuzhen Ye, Jeong-Hyeon Choi and Haixu Tang. RAPSearch: a Fast Protein Similarity Search Tool for Short Reads. BMC Bioinformatics 2011, 12:159.](http://www.biomedcentral.com/1471-2105/12/159/abstract).
+
+2. [RAPSearch2: a fast and memory-efficient protein similarity search tool for next-generation sequencing data Yongan Zhao, Haixu Tang and Yuzhen Ye. 2011.](http://bioinformatics.oxfordjournals.org/content/28/1/125.full)
+
+
+14. Tophat and Cufflinks
 ============
 
+Tophat and Cufflinks process RNAseq reads aligned onto a reference genome and resolve the intron-exon junctions.
 
-15. Cufflinks
-==============
+1.	[TopHat: discovering splice junctions with RNA-Seq Cole Trapnell, Lior Pachter and Steven L. Salzberg Bioinformatics. 2009](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2672628/)
+
+2.	Differential gene and transcript expression analysis of RNA-seq experiments with TopHat and Cufflinks Cole Trapnell et al. Nature Protocols 7, 562.578 (2012).
 
 
 
